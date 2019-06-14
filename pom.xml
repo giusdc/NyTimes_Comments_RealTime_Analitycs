@@ -27,7 +27,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>Main</mainClass>
+                            <mainClass>kafka.Simulator</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

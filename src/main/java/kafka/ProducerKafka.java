@@ -11,7 +11,7 @@ public class ProducerKafka {
 
 
     public static void produce(Producer<String, String> producer, String line) throws IOException {
-        producer.send(new ProducerRecord<String, String>("comments", line));
+        producer.send(new ProducerRecord<String, String>("comments", line+"\n"));
     }
 
 

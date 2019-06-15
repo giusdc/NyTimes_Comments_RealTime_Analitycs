@@ -6,7 +6,7 @@ public class KafkaProperties {
     public static Properties getProperties(){
         Properties props = new Properties();
 
-        props.put("bootstrap.servers", "3.121.202.240:9092");
+        props.put("bootstrap.servers", "localhost:9092");
         //props.put("group.id", group);
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");

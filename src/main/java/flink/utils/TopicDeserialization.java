@@ -1,50 +1,49 @@
 package flink.utils;
 
-import static org.apache.flink.shaded.netty4.io.netty.handler.codec.http.HttpResponseStatus.parseLine;
 
-public class TopicDeserialization {
-    private long approveDate;
-    private String articleId;
-    private long wordCount;
-    private long commentId;
-    private String commentType;
-    private long createDate;
-    private int depth;
-    private String editorSelection;
-    private long inReplyTo;
-    private String parentUserDisplayName;
-    private int recommendations;
-    private String sectionName;
-    private String userDisplayName;
-    private String userLocation;
-    private long userId;
-    private String line;
 
-    public TopicDeserialization(String line) {
-        parse(line);
+import org.apache.flink.api.common.serialization.DeserializationSchema;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.tuple.Tuple15;
+import org.apache.flink.api.java.typeutils.TupleTypeInfo;
+
+import java.io.IOException;
+
+
+
+public class TopicDeserialization implements DeserializationSchema<Tuple15<Long, String, Long, Long, String,
+        Long, Integer, String, Long, String, Long,String,String,Long,String>> {
+
+
+
+
+    @Override
+    public Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> deserialize(byte[] message) throws IOException {
+        String line = new String(message);
+        return CommentParser.parse(line);
     }
 
-    private void parse(String line) {
-
+    @Override
+    public boolean isEndOfStream(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> longStringLongLongStringLongIntegerStringLongStringLongStringStringLongStringTuple15) {
+        return false;
     }
 
-    public TopicDeserialization(long approveDate, String articleId, long wordCount, long commentId, String commentType, long createDate, int depth, String editorSelection, long inReplyTo, String parentUserDisplayName, int recommendations, String sectionName, String userDisplayName, String userLocation, long userId) {
-        this.approveDate = approveDate;
-        this.articleId = articleId;
-        this.wordCount = wordCount;
-        this.commentId = commentId;
-        this.commentType = commentType;
-        this.createDate = createDate;
-        this.depth = depth;
-        this.editorSelection = editorSelection;
-        this.inReplyTo = inReplyTo;
-        this.parentUserDisplayName = parentUserDisplayName;
-        this.recommendations = recommendations;
-        this.sectionName = sectionName;
-        this.userDisplayName = userDisplayName;
-        this.userLocation = userLocation;
-        this.userId = userId;
+    @Override
+    public TypeInformation<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> getProducedType() {
+        return new TupleTypeInfo<>(TypeInformation.of(Long.class),
+                TypeInformation.of(String.class),
+                TypeInformation.of(Long.class),
+                TypeInformation.of(Long.class),
+                TypeInformation.of(String.class),
+                TypeInformation.of(Long.class),
+                TypeInformation.of(Integer.class),
+                TypeInformation.of(String.class),
+                TypeInformation.of(Long.class),
+                TypeInformation.of(String.class),
+                TypeInformation.of(Long.class),
+                TypeInformation.of(String.class),
+                TypeInformation.of(String.class),
+                TypeInformation.of(Long.class),
+                TypeInformation.of(String.class));
     }
-
-
 }

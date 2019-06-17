@@ -21,10 +21,9 @@ public class Simulator {
             if((next=reader.readLine())!=null){
                 long firstApproveDate = Long.parseLong(line.split(",", -1)[0]);
                 long nextApproveDate = Long.parseLong(next.split(",", -1)[0]);
-                long time=(nextApproveDate-firstApproveDate); //Difference time between first time and the next
-                //long startTime = System.currentTimeMillis();
+                long time=(nextApproveDate-firstApproveDate);//Difference time between first time and the next
+                System.out.println("TIME"+time+"\n");
                 TimeUnit.MILLISECONDS.sleep(time);
-                //System.out.println("elapse"+(System.currentTimeMillis()-startTime));
                 ProducerKafka.produce(producer,next);
             }
 

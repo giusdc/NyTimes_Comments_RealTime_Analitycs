@@ -1,6 +1,7 @@
 package flink;
 
 import flink.query.Query1;
+import flink.redis.RedisConfig;
 import flink.utils.KafkaProperties;
 
 import flink.utils.TopicDeserialization;
@@ -9,12 +10,16 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
+import redis.clients.jedis.Jedis;
 
 
 import java.util.Properties;
 
 public class MainFlink {
     public static void main(String[] args) throws Exception {
+
+        //Connect to Redis
+        RedisConfig.connect();
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);

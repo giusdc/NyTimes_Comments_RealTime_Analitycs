@@ -23,7 +23,7 @@ public class Simulator {
                 long nextApproveDate = Long.parseLong(next.split(",", -1)[0]);
                 long time=(nextApproveDate-firstApproveDate); //Difference time between first time and the next
                 //long startTime = System.currentTimeMillis();
-                TimeUnit.MICROSECONDS.sleep(time);
+                TimeUnit.MILLISECONDS.sleep(time);
                 //System.out.println("elapse"+(System.currentTimeMillis()-startTime));
                 ProducerKafka.produce(producer,next);
             }

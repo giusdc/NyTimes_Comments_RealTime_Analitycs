@@ -27,7 +27,8 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>kafka.Simulator</mainClass>
+                            <!--<mainClass>kafka.Simulator</mainClass>-->
+                            <mainClass>flink.MainFlink</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

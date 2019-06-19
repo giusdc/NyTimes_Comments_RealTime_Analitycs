@@ -16,6 +16,7 @@ public class RedisConfig {
     }
      public static void push(Tuple2<String,Integer> tuple,int count){
         jedis.hset(tuple.f0,String.valueOf(count),String.valueOf(tuple.f1));
+         System.out.println();
      }
 
      public static void print(){

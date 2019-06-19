@@ -23,11 +23,11 @@ public class Query1Process implements AggregateFunction<Tuple2<String, Integer>,
     public Tuple2<String, Integer> getResult(Tuple2<String, Integer> tuple) {
         count++;
         RedisConfig.push(tuple,count);
-        if(count==24){
+        /*if(count==24){
             System.out.println("Fine giorno");
             count=0;
             RedisConfig.print();
-        }
+        }*/
 
         return new Tuple2<>(tuple.f0,0);
     }

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Query1 {
     //In seconds
-    public static final int WINDOWS_LENGTH=86400;
+    public static final int WINDOWS_LENGTH=3600;
     public static final int SLIDING_WINDOWS_LENGHT=3600;
     public static void process(DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream){
         int count=0;
@@ -21,7 +21,7 @@ public class Query1 {
                 .map(x -> Query1Parser.parse(x))
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
-                .timeWindow(Time.of(WINDOWS_LENGTH, TimeUnit.MILLISECONDS), Time.of(SLIDING_WINDOWS_LENGHT, TimeUnit.MILLISECONDS))
+                .timeWindow(Time.of(WINDOWS_LENGTH, TimeUnit.MILLISECONDS))
                 .aggregate(new Query1Process());
         sum.print();
                 //.sum(1)

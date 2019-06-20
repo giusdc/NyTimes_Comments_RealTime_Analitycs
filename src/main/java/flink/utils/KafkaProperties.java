@@ -8,7 +8,7 @@ public class KafkaProperties {
 
         props.put("bootstrap.servers", "localhost:9092");
         //props.put("group.id", group);
-        props.put("zookeeper.connect", "localhost:2181");
+   //     props.put("zookeeper.connect", "localhost:2181");
 /*
         props.put("enable.auto.commit", "true");
         props.put("auto.commit.interval.ms", "1000");

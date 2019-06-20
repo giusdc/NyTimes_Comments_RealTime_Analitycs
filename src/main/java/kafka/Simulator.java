@@ -19,17 +19,23 @@ public class Simulator {
         line=reader.readLine();
         ProducerKafka.produce(producer,line);
         int count=1;
+        long passed_time = Long.parseLong(line.split(",", -1)[5]);
 
         //Produce on Kafka
-        while((next=reader.readLine())!=null && count<=5){
+        while((next=reader.readLine())!=null && count<=40){
             count++;
             long firstApproveDate = Long.parseLong(line.split(",", -1)[5]);
             long nextApproveDate = Long.parseLong(next.split(",", -1)[5]);
             long time=(nextApproveDate-firstApproveDate);//Difference time between first time and the next
-            System.out.println("TIME"+time+"\n");
+            float hourPassed = (float)(nextApproveDate - passed_time) / 3600;
+
+
+            System.out.println("ArticleID "+next.split(",",-1)[1]+"\n");
             TimeUnit.MILLISECONDS.sleep(time);
+            System.out.println("TIME "+hourPassed+"   ");
             ProducerKafka.produce(producer, next);
             line=next;
+
 
             }
         producer.close();

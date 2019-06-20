@@ -20,16 +20,35 @@ import java.util.concurrent.TimeUnit;
 public class Query1 {
     //In seconds
     public static final int WINDOWS_LENGTH=3600;
+    public static final int WINDOWS_DAILY=7200;
     public static final int SLIDING_WINDOWS_LENGHT=3600;
     public static void process(DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream){
-        int count=0;
-        DataStream<Tuple2<String, Integer>> sum = stream
+        //Hour statistic
+        DataStream<Object> rank1h = stream
                 .map(x -> Query1Parser.parse(x))
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
-                .timeWindow(Time.of(WINDOWS_LENGTH, TimeUnit.MILLISECONDS))
-                .aggregate(new Query1Process(),new Query1Rank());
-        sum.timeWindowAll(Time.of(WINDOWS_LENGTH,TimeUnit.MILLISECONDS)).apply(
+                .timeWindow(Time.milliseconds(WINDOWS_LENGTH))
+                .aggregate(new Query1Process(), new Query1Rank()).
+
+                /* //Daily statistic
+                 DataStream<Tuple2<String, Integer>> rankDaily = rank1h
+                         .keyBy(0)
+                         .timeWindow(Time.of(WINDOWS_DAILY, TimeUnit.MILLISECONDS), Time.of(SLIDING_WINDOWS_LENGHT, TimeUnit.MILLISECONDS))
+                         .aggregate(new Query1Process(), new Query1Rank());*/
+
+                        timeWindowAll(Time.milliseconds(WINDOWS_LENGTH)).apply(
+                        new AllWindowFunction<Tuple2<String, Integer>, Object, TimeWindow>() {
+                            @Override
+                            public void apply(TimeWindow timeWindow, Iterable<Tuple2<String, Integer>> iterable, Collector<Object> collector) throws Exception {
+                                System.out.println("---FINE FINESTRA--");
+                                collector.collect(iterable.iterator().next());
+                                System.out.println();
+                            }
+                        }
+                );
+        rank1h.print();
+       /* rankDaily.timeWindowAll(Time.of(SLIDING_WINDOWS_LENGHT,TimeUnit.MILLISECONDS)).apply(
                 new AllWindowFunction<Tuple2<String, Integer>, Object, TimeWindow>() {
                     @Override
                     public void apply(TimeWindow timeWindow, Iterable<Tuple2<String, Integer>> iterable, Collector<Object> collector) throws Exception {
@@ -37,14 +56,16 @@ public class Query1 {
                         System.out.println();
                     }
                 }
-        );
+        );*/
 
 
 
 
 
 
-        sum.print();
+
+
+        rank1h.print();
 
 
     }

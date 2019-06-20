@@ -28,8 +28,6 @@ public class Query1Process implements AggregateFunction<Tuple2<String, Integer>,
             count=0;
             RedisConfig.print();
         }*/
-
-
         return new Tuple2<>(tuple.f0,tuple.f1);
     }
 

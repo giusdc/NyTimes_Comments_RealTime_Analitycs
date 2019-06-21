@@ -31,43 +31,29 @@ import static flink.utils.FileUtils.createFile;
 public class MainFlink {
 
     public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","pophourly.csv"};
-    public static final int WINDOWS_LENGTH=3600;
-    public static final int WINDOWS_DAILY=7200; //CHange
-    public static final int WINDOWS_WEEK=604800;
-    public static final int SLIDING_WINDOWS_LENGHT=3600;
-    public static final int SLIDING_WINDOWS_DAILY_LENGHT=86400;
+
     public static void main(String[] args) throws Exception {
         createFile(pathList);
-
         //Connect to Redis
         RedisConfig.connect();
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-        env.enableCheckpointing(5000, CheckpointingMode.EXACTLY_ONCE);
+        //env.enableCheckpointing(5000, CheckpointingMode.EXACTLY_ONCE);
         //Set Kafka propertiesrank1h.print();
         Properties properties= KafkaProperties.getProperties();
 
-        FlinkKafkaConsumerBase<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> kafkasource=new FlinkKafkaConsumer011<>("comments",new TopicDeserialization(), properties).setStartFromLatest();
+        FlinkKafkaConsumerBase<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> kafkasource=new FlinkKafkaConsumer011<>("comments",new TopicDeserialization(), properties).setStartFromEarliest();
         //Set source
-/*
-kafkasource.assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>>(Time.seconds(0)) {
-
-            @Override
-            public long extractTimestamp(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> tuple15) {
-                System.out.println();
-                return tuple15.f5;
-            }
-        });*/
-
-
-        kafkasource.assignTimestampsAndWatermarks(new AscendingTimestampExtractor<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>>() {
+       kafkasource.assignTimestampsAndWatermarks(new AscendingTimestampExtractor<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>>() {
             @Override
             public long extractAscendingTimestamp(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> tuple15) {
                 return tuple15.f5;
             }
         });
+
+
 
         DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream =env.addSource(kafkasource);
 

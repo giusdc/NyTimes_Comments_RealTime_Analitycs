@@ -1,4 +1,4 @@
-package flink.utils;
+package flink.utils.kafka;
 
 
 import org.apache.flink.api.java.tuple.Tuple15;

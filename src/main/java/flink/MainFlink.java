@@ -1,32 +1,22 @@
 package flink;
 
 import flink.query.Query1;
-import flink.query.Query3;
 import flink.redis.RedisConfig;
-import flink.utils.KafkaProperties;
+import flink.utils.kafka.KafkaProperties;
 
-import flink.utils.TopicDeserialization;
+import flink.utils.kafka.TopicDeserialization;
 import org.apache.flink.api.java.tuple.Tuple15;
-import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks;
 import org.apache.flink.streaming.api.functions.timestamps.AscendingTimestampExtractor;
-import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor;
-import org.apache.flink.streaming.api.watermark.Watermark;
-import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumerBase;
-import redis.clients.jedis.Jedis;
 
 
-import javax.annotation.Nullable;
-import java.io.File;
 import java.util.Properties;
 
-import static flink.utils.FileUtils.createFile;
+import static flink.utils.other.FileUtils.createFile;
 
 public class MainFlink {
 

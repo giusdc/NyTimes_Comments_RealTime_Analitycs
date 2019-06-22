@@ -1,4 +1,4 @@
-package flink.utils;
+package flink.utils.kafka;
 
 
 

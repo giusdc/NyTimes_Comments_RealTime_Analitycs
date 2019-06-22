@@ -1,6 +1,10 @@
 package flink.query;
 
-import flink.utils.*;
+import flink.utils.flink.*;
+import flink.utils.flink.query3.Query3Aggregate;
+import flink.utils.flink.query3.Query3AggregateIntermediate;
+import flink.utils.flink.query3.Query3Parser;
+import flink.utils.flink.query3.Query3Rank;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -21,21 +25,21 @@ public class Query3 {
     public static void process(DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream) {
 
         DataStream<Tuple2<Long, Float>> rankDaily = stream
-                .map(x -> Query2Parser.parse(x))
+                .map(x -> Query3Parser.parse(x))
                 .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG))
                 .keyBy(0)
                 .timeWindow(Time.milliseconds(WINDOW_DAILY))
-                .aggregate(new Query3Process(), new Query3Rank());
+                .aggregate(new Query3Aggregate(), new Query3Rank());
 
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)
                 .timeWindow(Time.milliseconds(WINDOW_WEEK), Time.milliseconds(WINDOW_DAILY))
-                .aggregate(new Query3ProcessIntermediate(), new Query3Rank());
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank());
 
         DataStream<Tuple2<Long, Float>> rankMonthly = rankWeekly
                 .keyBy(0)
                 .timeWindow(Time.milliseconds(WINDOW_MONTH), Time.milliseconds(WINDOW_WEEK))
-                .aggregate(new Query3ProcessIntermediate(), new Query3Rank());
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank());
 
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
                 new Query3RankWindows("pophourly.csv"));

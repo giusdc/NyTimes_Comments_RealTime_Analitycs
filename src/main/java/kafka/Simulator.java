@@ -29,7 +29,7 @@ public class Simulator {
         long passed_time = Long.parseLong(line.split(",", -1)[5]);
 
         //Produce on Kafka
-        while ((next = reader.readLine()) != null) {
+        while ((next = reader.readLine()) != null && count<=20) {
             count++;
             if (checkLine(next)){
                 long firstApproveDate = Long.parseLong(line.split(",", -1)[5]);

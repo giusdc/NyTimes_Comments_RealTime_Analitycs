@@ -1,4 +1,4 @@
-package flink.utils;
+package flink.utils.flink.query3;
 
 import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -6,7 +6,7 @@ import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple4;
 import scala.Int;
 
-public class Query3Process implements AggregateFunction<Tuple4<Long, String,String,Long>, Tuple3<Long, Float,Integer>, Tuple2<Long, Float>> {
+public class Query3Aggregate implements AggregateFunction<Tuple4<Long, String,String,Long>, Tuple3<Long, Float,Integer>, Tuple2<Long, Float>> {
 
     private float wa=0.3f;
     private float wb= 0.7f;

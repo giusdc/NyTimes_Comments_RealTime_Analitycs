@@ -20,13 +20,12 @@ public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, T
 
 
         String id= FileUtils.getId(file)+context.window().getStart();
-        Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
-        RedisConfig.pushRank1(id,tupleWindows);
-        collector.collect(((Tuple2<String, Integer>) iterable.iterator().next()));
-
+       Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
+        Thread t=new Thread(new PushRank(id,tupleWindows));
+        t.start();
 
     }
 
-    //Get an id on the basis of file
+
 
 }

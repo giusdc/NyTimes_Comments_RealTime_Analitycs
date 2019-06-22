@@ -39,7 +39,7 @@ public class MainFlink {
        kafkasource.assignTimestampsAndWatermarks(new AscendingTimestampExtractor<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>>() {
             @Override
             public long extractAscendingTimestamp(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> tuple15) {
-                return tuple15.f5;
+                return tuple15.f5*1000;
             }
         });
 

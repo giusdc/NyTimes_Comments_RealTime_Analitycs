@@ -1,6 +1,7 @@
 package flink.utils.flink;
 
 import flink.redis.RedisConfig;
+import flink.utils.flink.query1.FinalRank;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.functions.windowing.AllWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
@@ -27,18 +28,10 @@ public class Query1RankWindows implements AllWindowFunction<Tuple2<String, Integ
     @Override
     public void apply(TimeWindow timeWindow, Iterable<Tuple2<String, Integer>> iterable, Collector<Object> collector) throws Exception {
 
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
         String id= FileUtils.getId(file)+(timeWindow.getStart()-lag);
-        Set<String> rank = RedisConfig.getRank(id);
-        writer.write(""+rank.iterator().next().split("_")[1]+",");
-        for(int i=0;i<rank.size();i++){
-            writer.write("("+rank.iterator().next().split("_")[0]+","+rank.iterator().next().split("_")[2]+"),");
-        }
-        writer.write("\n");
-        //RedisConfig.jedis.del(id);
-        writer.close();
-        System.out.println();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
+        Thread t=new Thread(new FinalRank(id,writer));
+        t.start();
 
     }
 }

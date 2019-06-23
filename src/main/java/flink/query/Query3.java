@@ -1,26 +1,16 @@
 package flink.query;
 
-import flink.utils.flink.*;
-import flink.utils.flink.query3.Query3Aggregate;
-import flink.utils.flink.query3.Query3AggregateIntermediate;
-import flink.utils.flink.query3.Query3Parser;
-import flink.utils.flink.query3.Query3Rank;
+import flink.utils.flink.query3.*;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
+import java.math.BigInteger;
 
 
 public class Query3 {
-
-
-    public static final int WINDOW_DAILY=86400;
-    public static final int WINDOW_WEEK=604800;
-    public static final int WINDOW_MONTH=2592000;
-    public static final int SLIDING_WINDOW_LENGHT=WINDOW_DAILY;
-    public static final int SLIDING_WINDOW_WEEK_LENGHT=WINDOW_WEEK;
 
     public static void process(DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream) {
 
@@ -28,21 +18,25 @@ public class Query3 {
                 .map(x -> Query3Parser.parse(x))
                 .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG))
                 .keyBy(0)
-                .timeWindow(Time.milliseconds(WINDOW_DAILY))
-                .aggregate(new Query3Aggregate(), new Query3Rank());
+                .timeWindow(Time.hours(1))
+                .aggregate(new Query3Aggregate(), new Query3Rank("popdaily.csv"));
 
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)
-                .timeWindow(Time.milliseconds(WINDOW_WEEK), Time.milliseconds(WINDOW_DAILY))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank());
+                .timeWindow(Time.days(1), Time.hours(1))
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popweekly.csv"));
 
         DataStream<Tuple2<Long, Float>> rankMonthly = rankWeekly
                 .keyBy(0)
-                .timeWindow(Time.milliseconds(WINDOW_MONTH), Time.milliseconds(WINDOW_WEEK))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank());
+                .timeWindow(Time.days(30), Time.days(7))
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popmonthly.csv"));
 
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("pophourly.csv"));
+                new Query3RankWindows("popdaily.csv",3600000-1));
+        rankWeekly.timeWindowAll(Time.milliseconds(1)).apply(
+                new Query3RankWindows("popweekly.csv",86400000-1));
+        rankMonthly.timeWindowAll(Time.milliseconds(1)).apply(
+                new Query3RankWindows("popmonthly.csv",259200000-1));
 
     }
 }

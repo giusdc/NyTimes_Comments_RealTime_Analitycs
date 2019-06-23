@@ -3,7 +3,7 @@ package flink.query;
 import flink.utils.flink.query1.Query1Parser;
 import flink.utils.flink.query1.Query1Aggregate;
 import flink.utils.flink.query1.Query1Rank;
-import flink.utils.flink.Query1RankWindows;
+import flink.utils.flink.query1.Query1RankWindows;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -26,7 +26,7 @@ public class Query1 {
                 .aggregate(new Query1Aggregate(), new Query1Rank("rankhourly.csv"));
 
         //Daily statistic
-      DataStream<Tuple2<String, Integer>> rankDaily = rank1h
+     DataStream<Tuple2<String, Integer>> rankDaily = rank1h
                          .keyBy(0)
                          .timeWindow(Time.days(1), Time.hours(1))
                          .aggregate(new Query1Aggregate(), new Query1Rank("rankdaily.csv"));

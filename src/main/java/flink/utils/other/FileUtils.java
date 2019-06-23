@@ -20,6 +20,12 @@ public class FileUtils {
                 return "D";
             case "rankweekly.csv":
                 return "W";
+            case "popdaily.csv":
+                return "D";
+            case "popweekly.csv":
+                return "W";
+            case "popmonthly.csv":
+                return "M";
             default:
                 return null;
         }

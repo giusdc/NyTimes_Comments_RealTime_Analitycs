@@ -9,6 +9,7 @@ public class Query1Aggregate implements AggregateFunction<Tuple2<String, Integer
 
     @Override
     public Tuple2<String, Integer> createAccumulator() {
+
         return new Tuple2<>("",0);
     }
 
@@ -19,6 +20,7 @@ public class Query1Aggregate implements AggregateFunction<Tuple2<String, Integer
 
     @Override
     public Tuple2<String, Integer> getResult(Tuple2<String, Integer> tuple) {
+
         return new Tuple2<>(tuple.f0,tuple.f1);
     }
 

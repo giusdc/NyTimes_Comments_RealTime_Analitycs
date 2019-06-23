@@ -19,8 +19,9 @@ public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, T
     public void process(Tuple tuple, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) throws Exception {
 
 
-        String id= FileUtils.getId(file)+context.window().getStart();
+        String id= FileUtils.getId(file)+"1"+context.window().getStart();
        Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
+       collector.collect(iterable.iterator().next());
         Thread t=new Thread(new PushRank(id,tupleWindows));
         t.start();
 

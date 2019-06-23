@@ -1,6 +1,7 @@
 package flink;
 
 import flink.query.Query1;
+import flink.query.Query3;
 import flink.redis.RedisConfig;
 import flink.utils.kafka.KafkaProperties;
 
@@ -20,18 +21,16 @@ import static flink.utils.other.FileUtils.createFile;
 
 public class MainFlink {
 
-    public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","pophourly.csv"};
+    public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv"};
 
     public static void main(String[] args) throws Exception {
         createFile(pathList);
-        //Connect to Redis
-        RedisConfig.connect();
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         //env.enableCheckpointing(5000, CheckpointingMode.EXACTLY_ONCE);
-        //Set Kafka propertiesrank1h.print();
+        //Set Kafka properties
         Properties properties= KafkaProperties.getProperties();
 
         FlinkKafkaConsumerBase<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> kafkasource=new FlinkKafkaConsumer011<>("comments",new TopicDeserialization(), properties).setStartFromEarliest();
@@ -49,7 +48,7 @@ public class MainFlink {
 
 
         Query1.process(stream);
-        //Query3.process(stream);
+        Query3.process(stream);
 
         //Process Query
         env.execute();

@@ -1,4 +1,4 @@
-package flink.utils.flink;
+package flink.utils.flink.query1;
 
 import flink.redis.RedisConfig;
 import flink.utils.flink.query1.FinalRank;
@@ -28,9 +28,10 @@ public class Query1RankWindows implements AllWindowFunction<Tuple2<String, Integ
     @Override
     public void apply(TimeWindow timeWindow, Iterable<Tuple2<String, Integer>> iterable, Collector<Object> collector) throws Exception {
 
-        String id= FileUtils.getId(file)+(timeWindow.getStart()-lag);
+        //TODO Scrittura non nel thread,scrive random, ultima ora perchè non viene scritta?
+        String id= FileUtils.getId(file)+"1"+(timeWindow.getStart()-lag);
         BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
-        Thread t=new Thread(new FinalRank(id,writer));
+        Thread t=new Thread(new FinalRank(id,writer,3));
         t.start();
 
     }

@@ -27,10 +27,10 @@ public class FinalRank implements Runnable {
             Jedis jedis=new Jedis("localhost");
             List<String> finalRank = jedis.sort(this.key, new SortingParams().alpha().desc());
             try {
-                writer.write(""+finalRank.get(0).split("_")[1]+",");
+                writer.write(""+finalRank.get(0).split("_")[2]+",");
 
                 for(int i=0;i<finalRank.size();i++){
-                    writer.write("("+finalRank.get(i).split("_")[0]+","+finalRank.get(i).split("_")[2]+"),");
+                    writer.write("("+finalRank.get(i).split("_")[1]+","+finalRank.get(i).split("_")[0]+"),");
                     if(i==position-1)
                         break;
                 }

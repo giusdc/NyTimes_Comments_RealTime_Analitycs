@@ -4,6 +4,10 @@ import org.apache.kafka.clients.producer.Producer;
 import scala.Int;
 
 import java.io.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -21,15 +25,18 @@ public class Simulator {
         //Produce first line
         line = reader.readLine();
         System.out.println("ArticleID " + line.split(",", -1)[1]);
-        Date date = new Date(Long.parseLong(line.split(",", -1)[5]) * 1000);
-        System.out.println("date" + date + "\n");
+        long passed_time = Long.parseLong(line.split(",", -1)[5]);
+        LocalDateTime triggerTime =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(passed_time),
+                        ZoneOffset.UTC.normalized());
+        System.out.println("date " + triggerTime + "\n");
         if (checkLine(line))
             ProducerKafka.produce(producer, line);
         int count = 1;
-        long passed_time = Long.parseLong(line.split(",", -1)[5]);
+
 
         //Produce on Kafka
-        while ((next = reader.readLine()) != null && count<=20) {
+        while ((next = reader.readLine()) != null) {
             count++;
             if (checkLine(next)){
                 long firstApproveDate = Long.parseLong(line.split(",", -1)[5]);
@@ -38,8 +45,11 @@ public class Simulator {
                 //Difference time between first time and the next
                 TimeUnit.MILLISECONDS.sleep(time);
                 System.out.println("ArticleID " + next.split(",", -1)[1]);
-                Date date2 = new Date((Long.parseLong(next.split(",", -1)[5]) * 1000));
-                System.out.println("date" + date2 + "\n");
+                long timestamp = Long.parseLong(next.split(",", -1)[5]) * 1000;
+                LocalDateTime triggerTime2 =
+                        LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
+                                ZoneOffset.UTC.normalized());
+                System.out.println("date " + triggerTime2 + "\n");
                 ProducerKafka.produce(producer, next);
             }
             line = next;

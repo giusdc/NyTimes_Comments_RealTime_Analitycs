@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class FinalRank implements Runnable {
+public class FinalRank {
 
     private String key;
     private BufferedWriter writer;
@@ -21,16 +21,18 @@ public class FinalRank implements Runnable {
         this.position=position;
     }
 
-    @Override
-    public void run()  {
-        synchronized (this){
-            Jedis jedis=new Jedis("localhost");
-            List<String> finalRank = jedis.sort(this.key, new SortingParams().alpha().desc());
-            try {
-                writer.write(""+finalRank.get(0).split("_")[2]+",");
 
-                for(int i=0;i<finalRank.size();i++){
-                    writer.write("("+finalRank.get(i).split("_")[1]+","+finalRank.get(i).split("_")[0]+"),");
+    public void getRank()  {
+
+            Jedis jedis=new Jedis("localhost");
+            Set<String> rank = jedis.zrange(key, 0, position-1);
+            String[] finalRank= rank.toArray(new String[0]);
+
+            try {
+                writer.write(""+key.split("_")[1]+",");
+
+                for(int i=0;i<finalRank.length;i++){
+                    writer.write("("+finalRank[i].split("_")[0]+","+finalRank[i].split("_")[1]+"),");
                     if(i==position-1)
                         break;
                 }
@@ -45,4 +47,4 @@ public class FinalRank implements Runnable {
         }
 
     }
-}
+

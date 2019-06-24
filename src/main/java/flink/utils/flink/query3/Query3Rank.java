@@ -19,9 +19,8 @@ public class Query3Rank extends ProcessWindowFunction<Tuple2<Long, Float>, Tuple
     @Override
     public void process(Tuple tuple, Context context, Iterable<Tuple2<Long, Float>> iterable, Collector<Tuple2<Long, Float>> collector) throws Exception {
         Tuple2<Long, Float> tupleWindows = iterable.iterator().next();
-        String id= FileUtils.getId(file)+"3"+context.window().getStart();
+        String id= FileUtils.getId(file)+"3"+"_"+context.window().getStart();
         collector.collect(((Tuple2<Long, Float>) iterable.iterator().next()));
-        Thread t=new Thread(new PushUserRank(id,tupleWindows));
-        t.start();
+        new PushUserRank(id,tupleWindows).rank();
     }
 }

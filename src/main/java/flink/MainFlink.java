@@ -2,7 +2,7 @@ package flink;
 
 import flink.query.Query1;
 import flink.query.Query3;
-import flink.redis.RedisConfig;
+import flink.query.Query2;
 import flink.utils.kafka.KafkaProperties;
 
 import flink.utils.kafka.TopicDeserialization;
@@ -21,7 +21,7 @@ import static flink.utils.other.FileUtils.createFile;
 
 public class MainFlink {
 
-    public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv"};
+    public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv","commentdaily.csv","commentweekly.csv","commentmonthly.csv"};
 
     public static void main(String[] args) throws Exception {
         createFile(pathList);
@@ -47,8 +47,9 @@ public class MainFlink {
         DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream =env.addSource(kafkasource);
 
 
-        Query1.process(stream);
-        Query3.process(stream);
+        //Query1.process(stream);
+        Query2.process(stream);
+        //Query3.process(stream);
 
         //Process Query
         env.execute();

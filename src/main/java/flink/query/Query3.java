@@ -18,12 +18,12 @@ public class Query3 {
                 .map(x -> Query3Parser.parse(x))
                 .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG))
                 .keyBy(0)
-                .timeWindow(Time.hours(1))
+                .timeWindow(Time.days(1))
                 .aggregate(new Query3Aggregate(), new Query3Rank("popdaily.csv"));
 
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)
-                .timeWindow(Time.days(1), Time.hours(1))
+                .timeWindow(Time.days(7), Time.days(1))
                 .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popweekly.csv"));
 
         DataStream<Tuple2<Long, Float>> rankMonthly = rankWeekly
@@ -32,11 +32,11 @@ public class Query3 {
                 .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popmonthly.csv"));
 
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("popdaily.csv",3600000-1));
+                new Query3RankWindows("popdaily.csv",86400000-1));
         rankWeekly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("popweekly.csv",86400000-1));
+                new Query3RankWindows("popweekly.csv",604800000-1));
         rankMonthly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("popmonthly.csv",259200000-1));
+                new Query3RankWindows("popmonthly.csv",2592000000L-1));
 
     }
 }

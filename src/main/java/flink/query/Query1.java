@@ -7,15 +7,37 @@ import flink.utils.flink.query1.Query1RankWindows;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.dropwizard.metrics.DropwizardMeterWrapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
-
-
+import org.apache.flink.util.Collector;
 
 
 public class Query1 {
-    //Windows length in seconds
+
     public static void process(DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream){
+
+
+
+        //new MeterQuery1();
+        //for metric computing only
+        stream.process(new ProcessFunction <Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>,Object> (){
+            private transient DropwizardMeterWrapper meter;
+
+            @Override
+            public void processElement(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> tuple15, Context context, Collector<Object> collector) throws Exception {
+                com.codahale.metrics.Meter dropwizard = new com.codahale.metrics.Meter();
+                this.meter = getRuntimeContext().getMetricGroup().addGroup("Query1").meter("throughput_in", new DropwizardMeterWrapper(dropwizard));
+                this.meter.markEvent();
+                double value=this.meter.getDropwizardMeter().getMeanRate();
+                System.out.println();
+            }
+        });
+
+
+
+
 
         //Hour statistic
         DataStream<Tuple2<String, Integer>> rank1h = stream

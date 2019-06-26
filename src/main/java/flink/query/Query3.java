@@ -2,24 +2,49 @@ package flink.query;
 
 import flink.utils.flink.query3.*;
 import org.apache.flink.api.common.typeinfo.Types;
+import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple5;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
-
-import java.math.BigInteger;
 
 
 public class Query3 {
 
     public static void process(DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream) {
 
-        DataStream<Tuple2<Long, Float>> rankDaily = stream
+        //Mapper
+        DataStream<Tuple5<Long, String, String, Long, Long>> mapper = stream
                 .map(x -> Query3Parser.parse(x))
-                .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG))
+                .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG));
+
+        DataStream<Tuple2<Long, Float>> dailyDirect = mapper
                 .keyBy(0)
                 .timeWindow(Time.days(1))
-                .aggregate(new Query3Aggregate(), new Query3Rank("popdaily.csv"));
+                .aggregate(new Query3DirectAggregate());
+
+        DataStream<Tuple2<Long, Float>> dailyIndirect = mapper
+                .map(x->Query3Parser.changeKey(x))
+                .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG))
+                .keyBy(0)
+                .timeWindow(Time.days(1))
+                .aggregate(new Query3IndirectAggregate());
+
+        dailyDirect.print();
+        dailyIndirect.print();
+
+
+        DataStream<Tuple2<Long, Float>> rankDaily = dailyDirect
+                .join(dailyIndirect)
+                .where((KeySelector<Tuple2<Long, Float>, Long>) t -> t.f0)
+                .equalTo((KeySelector<Tuple2<Long, Float>, Long>) t -> t.f0)
+                .window(TumblingEventTimeWindows.of(Time.days(1)))
+                .apply(new JoinValues())
+                .keyBy(0)
+                .timeWindow(Time.days(1))
+                .process(new Query3Rank("popdaily.csv"));
 
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)

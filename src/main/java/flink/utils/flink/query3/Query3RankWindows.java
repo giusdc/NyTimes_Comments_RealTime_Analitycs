@@ -27,6 +27,6 @@ public class Query3RankWindows implements AllWindowFunction<Tuple2<Long, Float>,
     public void apply(TimeWindow timeWindow, Iterable<Tuple2<Long, Float>> iterable, Collector<Object> collector) throws Exception {
         String id= FileUtils.getId(file)+"3"+"_"+(timeWindow.getStart()-lag);
         BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
-        new FinalRank(id,writer,3).getRank();
+        new FinalRank(id,writer,10).getRank();
     }
 }

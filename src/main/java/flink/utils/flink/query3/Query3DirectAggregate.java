@@ -16,9 +16,6 @@ public class Query3DirectAggregate implements AggregateFunction<Tuple5<Long, Str
     @Override
     public Tuple2<Long, Float> add(Tuple5<Long, String, String, Long,Long> tuple5, Tuple2<Long, Float> agg) {
 
-        if(tuple5.f0==46988223)
-            System.out.println();
-
         if(tuple5.f1.equals("comment")) {
                 value = tuple5.f3;
                 if (tuple5.f2.equals("True"))

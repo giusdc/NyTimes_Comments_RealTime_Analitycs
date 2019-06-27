@@ -22,14 +22,17 @@ public class Query3 {
 
         DataStream<Tuple2<Long, Float>> dailyDirect = mapper
                 .keyBy(0)
-                .timeWindow(Time.days(1))
+                .window(TumblingEventTimeWindows.of(Time.days(1)))
+                //.timeWindow(Time.days(1))
                 .aggregate(new Query3DirectAggregate());
 
         DataStream<Tuple2<Long, Float>> dailyIndirect = mapper
                 .map(x->Query3Parser.changeKey(x))
                 .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG))
+                .filter(x->x.f0!=null)
                 .keyBy(0)
-                .timeWindow(Time.days(1))
+                .window(TumblingEventTimeWindows.of(Time.days(1)))
+                //.timeWindow(Time.days(1))
                 .aggregate(new Query3IndirectAggregate());
 
         dailyDirect.print();
@@ -43,17 +46,17 @@ public class Query3 {
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
                 .apply(new JoinValues())
                 .keyBy(0)
-                .timeWindow(Time.days(1))
+                .window(TumblingEventTimeWindows.of(Time.days(1)))
                 .process(new Query3Rank("popdaily.csv"));
 
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)
-                .timeWindow(Time.days(7), Time.days(1))
+                .window(TumblingEventTimeWindows.of(Time.days(7), Time.days(-3)))
                 .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popweekly.csv"));
 
         DataStream<Tuple2<Long, Float>> rankMonthly = rankWeekly
                 .keyBy(0)
-                .timeWindow(Time.days(30), Time.days(7))
+                .window(TumblingEventTimeWindows.of(Time.days(30)))
                 .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popmonthly.csv"));
 
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(

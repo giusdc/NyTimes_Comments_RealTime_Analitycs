@@ -46,10 +46,9 @@ public class MainFlink {
 
         DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream =env.addSource(kafkasource);
 
-
         Query1.process(stream);
-       //Query2.process(stream);
-        //Query3.process(stream);
+       Query2.process(stream);
+       Query3.process(stream);
 
         //Process Query
         env.execute();

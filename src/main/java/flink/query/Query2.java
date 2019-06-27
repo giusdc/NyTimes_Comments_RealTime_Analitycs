@@ -35,16 +35,14 @@ public class Query2 {
                 .window(TumblingEventTimeWindows.of(Time.hours(2)))
                 .sum(1);
 
-
-
         DataStream<Tuple2<String, Integer>> countWeekly=countHours
                 .keyBy(0)
-                .timeWindow(Time.days(7))
+                .window(TumblingEventTimeWindows.of(Time.days(7),Time.days(-3)))
                 .sum(1);
 
         DataStream<Tuple2<String, Integer>> countMonthly=countWeekly
                 .keyBy(0)
-                .timeWindow(Time.days(30))
+                .window(TumblingEventTimeWindows.of(Time.days(30),Time.days(-3)))
                 .sum(1);
 
         countHours

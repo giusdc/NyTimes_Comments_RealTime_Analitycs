@@ -16,15 +16,17 @@ public class Query3IndirectAggregate implements AggregateFunction<Tuple5<Long, S
 
     @Override
     public Tuple2<Long, Float> add(Tuple5<Long, String, String, Long,Long> tuple5, Tuple2<Long, Float> agg) {
+
+        if(tuple5.f0==11960208){
+            System.out.println();
+        }
         if(tuple5.f1.equals("comment")) {
-            key=tuple5.f0;
             value = 0;
         }
         else {
-            key=tuple5.f4;
             value = 1;
         }
-        return new Tuple2<>(key,agg.f1+value);
+        return new Tuple2<>(tuple5.f0,agg.f1+value);
 
     }
 

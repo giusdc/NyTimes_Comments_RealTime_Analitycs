@@ -34,7 +34,7 @@ public class Simulator {
             ProducerKafka.produce(producer, line);
         int count = 1;
 
-
+        BufferedWriter writer = new BufferedWriter(new FileWriter("ciao.txt",true));
         //Produce on Kafka
         while ((next = reader.readLine()) != null) {
             count++;
@@ -50,21 +50,25 @@ public class Simulator {
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
                                 ZoneOffset.UTC.normalized());
                 System.out.println("date " + triggerTime2 + "\n");
+                if(Long.parseLong(next.split(",", -1)[5])>=1515024000 && Long.parseLong(next.split(",", -1)[5])<=1515110399)
+                {
+                    writer.write(next+"\n");
+
+                }
                 ProducerKafka.produce(producer, next);
             }
             line = next;
         }
         producer.close();
+        writer.close();
 
     }
 
     private static boolean checkLine(String line) {
+
+        //1514821725,5a49915f7c459f246b63d661,809,25391091,userReply,1514820713,2,False,25389721,ChristineMcM,7,Unknown,RADF,3600063,"Milford, DE",,,,,,,,,,,,,,,,,,,
         String[] str = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
         try {
-            if(Long.parseLong(str[5])==1514832035){
-                System.out.println("AMP"+line);
-                Integer.parseInt(str[13]);
-            }
             if (Long.parseLong(str[0]) < 1514764800)
                 return false;
             if (Integer.parseInt(str[2]) < 0)

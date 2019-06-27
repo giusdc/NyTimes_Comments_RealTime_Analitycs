@@ -21,7 +21,6 @@ public class Query3DirectAggregate implements AggregateFunction<Tuple5<Long, Str
                 if (tuple5.f2.equals("True"))
                     value = tuple5.f3+tuple5.f3 * 0.1f;
             }
-
             else
                 value=0;
             return new Tuple2<>(tuple5.f0,agg.f1+value);

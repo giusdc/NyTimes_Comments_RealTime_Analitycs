@@ -18,6 +18,9 @@ public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, T
     @Override
     public void process(Tuple tuple, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) throws Exception {
 
+        if(this.file.equals("rankweekly.csv")){
+            System.out.println();
+        }
         String id= FileUtils.getId(file)+"1"+"_"+context.window().getStart();
        Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
        collector.collect(iterable.iterator().next());

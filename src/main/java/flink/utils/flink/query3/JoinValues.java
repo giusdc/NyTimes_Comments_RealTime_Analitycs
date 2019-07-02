@@ -9,8 +9,8 @@ public class JoinValues implements JoinFunction<Tuple2<Long, Float>, Tuple2<Long
     float wb = 0.7f;
 
     @Override
-    public Tuple2<Long, Float> join(Tuple2<Long, Float> tupleDirect, Tuple2<Long, Float> tupleIndirect) {
-        if(tupleDirect.f0==46988223)
+    public synchronized Tuple2<Long, Float>  join(Tuple2<Long, Float> tupleDirect, Tuple2<Long, Float> tupleIndirect) {
+        if(tupleDirect.f0==2073520)
             System.out.println();
         return new Tuple2<>(tupleDirect.f0, wa * tupleDirect.f1 + wb * tupleIndirect.f1);
     }

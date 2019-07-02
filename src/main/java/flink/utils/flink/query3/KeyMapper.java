@@ -8,7 +8,7 @@ import redis.clients.jedis.Jedis;
 
 public class KeyMapper implements FlatMapFunction<Tuple6<Long, String, String, Long, Long, Integer>, Tuple5<Long, String, String, Long, Long>> {
     @Override
-    public void flatMap(Tuple6<Long, String, String, Long, Long, Integer> x, Collector<Tuple5<Long, String, String, Long, Long>> collector) throws Exception {
+    public synchronized void flatMap(Tuple6<Long, String, String, Long, Long, Integer> x, Collector<Tuple5<Long, String, String, Long, Long>> collector) throws Exception {
         if (x.f1.equals("comment"))
             collector.collect(new Tuple5<>(x.f0, x.f1, x.f2, x.f3, x.f4));
         else {

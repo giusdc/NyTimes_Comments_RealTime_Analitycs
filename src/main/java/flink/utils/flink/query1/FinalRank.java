@@ -3,6 +3,8 @@ package flink.utils.flink.query1;
 import redis.clients.jedis.Jedis;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 public class FinalRank {
@@ -17,11 +19,11 @@ public class FinalRank {
     }
 
 
-    public void getRank()  {
+    public synchronized void getRank()  {
 
             //Get position element from Redis
             Jedis jedis=new Jedis("localhost");
-            Set<String> rank = jedis.zrange(key, 0, position-1);
+            Set<String> rank = jedis.zrange(key, 0, 9);
             String[] finalRank= rank.toArray(new String[0]);
 
             //Write result on file

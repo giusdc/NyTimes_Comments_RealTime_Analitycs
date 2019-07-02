@@ -16,8 +16,8 @@ public class Query3Rank extends ProcessWindowFunction<Tuple2<Long, Float>, Tuple
 
 
     @Override
-    public void process(Tuple tuple, Context context, Iterable<Tuple2<Long, Float>> iterable, Collector<Tuple2<Long, Float>> collector) throws Exception {
-        if(file.equals("popweekly.csv")){
+    public synchronized void process(Tuple tuple, Context context, Iterable<Tuple2<Long, Float>> iterable, Collector<Tuple2<Long, Float>> collector) throws Exception {
+        if(file.equals("popdaily.csv")){
             System.out.println();
         }
         Tuple2<Long, Float> tupleWindows = iterable.iterator().next();

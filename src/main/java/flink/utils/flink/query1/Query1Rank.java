@@ -18,7 +18,7 @@ public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, T
     }
 
     @Override
-    public void process(Tuple tuple, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) {
+    public synchronized void process(Tuple tuple, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) {
 
         //Only for process
         com.codahale.metrics.Meter dropwizard = new com.codahale.metrics.Meter();

@@ -30,7 +30,7 @@ public class MainFlink {
         createFile(pathList);
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(3);
+        env.setParallelism(5);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         //env.enableCheckpointing(5000, CheckpointingMode.EXACTLY_ONCE);
         //Set Kafka properties

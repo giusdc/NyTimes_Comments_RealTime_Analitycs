@@ -37,7 +37,7 @@ public class Query1 {
     public static void process(DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream){
 
         //for metric computing only
-        /*
+
         stream.process(new ProcessFunction <Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>,Object> (){
             private transient DropwizardMeterWrapper meter;
             private transient Meter meter2;
@@ -51,7 +51,7 @@ public class Query1 {
                 double value=this.meter.getDropwizardMeter().getMeanRate();
                 //System.out.println();
             }
-        });*/
+        });
 
         /*
         DataStream<Tuple2<String, Integer>> rank1h = stream
@@ -137,7 +137,6 @@ public class Query1 {
         DataStream<Tuple2<String, Integer>> rankWeek = rank1h
                 .keyBy(0)
                 .window(SlidingEventTimeWindows.of(Time.days(7),Time.days(1)))
-                //.window(SlidingEventTimeWindows.of(Time.days(7),Time.days(1), Time.days(-3)))
                 .aggregate(new Query1Aggregate(), new Query1Rank("rankweekly.csv"));
 
         //Getting rank

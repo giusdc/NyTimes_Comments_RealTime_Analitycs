@@ -12,6 +12,7 @@ public class FileUtils {
 
     }
 
+    //Get id from the file
     public static String getId(String file) {
         switch (file){
             case "rankhourly.csv":

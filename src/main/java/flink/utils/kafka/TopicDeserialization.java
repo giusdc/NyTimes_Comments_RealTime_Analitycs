@@ -14,9 +14,6 @@ import java.io.IOException;
 public class TopicDeserialization implements DeserializationSchema<Tuple15<Long, String, Long, Long, String,
         Long, Integer, String, Long, String, Long,String,String,Long,String>> {
 
-
-
-
     @Override
     public Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> deserialize(byte[] message) throws IOException {
         String line = new String(message);

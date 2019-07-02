@@ -1,6 +1,5 @@
 package flink.utils.flink.query3;
 
-import flink.utils.flink.query1.PushRank;
 import flink.utils.other.FileUtils;
 import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -18,9 +17,12 @@ public class Query3Rank extends ProcessWindowFunction<Tuple2<Long, Float>, Tuple
 
     @Override
     public void process(Tuple tuple, Context context, Iterable<Tuple2<Long, Float>> iterable, Collector<Tuple2<Long, Float>> collector) throws Exception {
+        if(file.equals("popweekly.csv")){
+            System.out.println();
+        }
         Tuple2<Long, Float> tupleWindows = iterable.iterator().next();
         String id= FileUtils.getId(file)+"3"+"_"+context.window().getStart();
         collector.collect(((Tuple2<Long, Float>) iterable.iterator().next()));
-        new PushUserRank(id,tupleWindows).rank();
+        new PartialUserRank(id,tupleWindows).rank();
     }
 }

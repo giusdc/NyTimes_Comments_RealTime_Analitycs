@@ -6,10 +6,10 @@ import redis.clients.jedis.params.ZAddParams;
 
 import java.util.*;
 
-public class PushUserRank{
+public class PartialUserRank {
     private String key;
     private Tuple2<Long,Float> tupleWindows;
-    public PushUserRank(String key, Tuple2<Long, Float> tupleWindows) {
+    public PartialUserRank(String key, Tuple2<Long, Float> tupleWindows) {
         this.key=key;
         this.tupleWindows=tupleWindows;
     }

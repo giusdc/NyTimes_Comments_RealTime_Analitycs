@@ -3,9 +3,10 @@ package flink.utils.flink.query3;
 import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple5;
+import org.apache.flink.api.java.tuple.Tuple6;
 
 
-public class Query3DirectAggregate implements AggregateFunction<Tuple5<Long, String,String,Long,Long>, Tuple2<Long, Float>, Tuple2<Long, Float>> {
+public class Query3DirectAggregate implements AggregateFunction<Tuple6<Long, String,String,Long,Long,Integer>, Tuple2<Long, Float>, Tuple2<Long, Float>> {
 
     float value=0;
     @Override
@@ -14,16 +15,16 @@ public class Query3DirectAggregate implements AggregateFunction<Tuple5<Long, Str
     }
 
     @Override
-    public Tuple2<Long, Float> add(Tuple5<Long, String, String, Long,Long> tuple5, Tuple2<Long, Float> agg) {
+    public Tuple2<Long, Float> add(Tuple6<Long, String, String, Long,Long,Integer> tuple6, Tuple2<Long, Float> agg) {
 
-        if(tuple5.f1.equals("comment")) {
-                value = tuple5.f3;
-                if (tuple5.f2.equals("True"))
-                    value = tuple5.f3+tuple5.f3 * 0.1f;
+        if(tuple6.f1.equals("comment")) {
+                value = tuple6.f3;
+                if (tuple6.f2.equals("True"))
+                    value = tuple6.f3+tuple6.f3 * 0.1f;
             }
             else
                 value=0;
-            return new Tuple2<>(tuple5.f0,agg.f1+value);
+            return new Tuple2<>(tuple6.f0,agg.f1+value);
 
     }
 

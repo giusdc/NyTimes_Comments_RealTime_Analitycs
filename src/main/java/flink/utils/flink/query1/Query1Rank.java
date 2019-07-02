@@ -1,6 +1,5 @@
 package flink.utils.flink.query1;
 
-import flink.redis.RedisConfig;
 import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.functions.windowing.ProcessWindowFunction;
@@ -16,17 +15,13 @@ public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, T
     }
 
     @Override
-    public void process(Tuple tuple, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) throws Exception {
+    public void process(Tuple tuple, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) {
 
-        if(this.file.equals("rankweekly.csv")){
-            System.out.println();
-        }
+        //Create the key from searching in the db
         String id= FileUtils.getId(file)+"1"+"_"+context.window().getStart();
-       Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
-       collector.collect(iterable.iterator().next());
-       new PushRank(id,tupleWindows).rank();
-        /*Thread t=new Thread(new PushRank(id,tupleWindows));
-        t.start();*/
+        Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
+        collector.collect(iterable.iterator().next());
+        new PartialArticleRank(id,tupleWindows).rank();
 
     }
 

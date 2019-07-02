@@ -23,11 +23,14 @@ public class MainFlink {
 
     public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv","commentdaily.csv","commentweekly.csv","commentmonthly.csv"};
 
+    public static int offsetDay=-3;
+    public static int offsetHours=1;
+    public static boolean setOffset=true;
     public static void main(String[] args) throws Exception {
         createFile(pathList);
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(1);
+        env.setParallelism(3);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         //env.enableCheckpointing(5000, CheckpointingMode.EXACTLY_ONCE);
         //Set Kafka properties
@@ -46,7 +49,8 @@ public class MainFlink {
 
         DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream =env.addSource(kafkasource);
 
-        Query1.process(stream);
+
+       Query1.process(stream);
        Query2.process(stream);
        Query3.process(stream);
 

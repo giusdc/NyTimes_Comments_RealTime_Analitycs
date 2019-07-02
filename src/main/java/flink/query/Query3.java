@@ -27,6 +27,9 @@ public class Query3 {
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
                 .aggregate(new Query3DirectAggregate());
 
+
+
+
         //Daily indirect comments'statistics
         DataStream<Tuple2<Long, Float>> dailyIndirect = mapper
                 .flatMap(new KeyMapper())
@@ -35,6 +38,10 @@ public class Query3 {
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
                 .aggregate(new Query3IndirectAggregate());
+
+
+        dailyDirect.print();
+        dailyIndirect.print();
 
         //Join daily statistics
         DataStream<Tuple2<Long, Float>> rankDaily = dailyDirect

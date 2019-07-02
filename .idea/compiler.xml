@@ -10,8 +10,5 @@
         <module name="quickstart" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="SabdProject2" target="8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

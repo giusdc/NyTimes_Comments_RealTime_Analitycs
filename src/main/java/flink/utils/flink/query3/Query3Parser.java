@@ -12,6 +12,8 @@ public class Query3Parser {
         //Delete a tuple after two weeks
         jedis.setex(String.valueOf(x.f3),1200,String.valueOf(x.f13)+"_"+x.f8);
         jedis.close();
+        if(x.f13==2073520)
+            System.out.println();
 
         return new Tuple6<Long,String, String, Long,Long,Integer>(x.f13,x.f4,x.f7,x.f10,x.f8,x.f6);
     }

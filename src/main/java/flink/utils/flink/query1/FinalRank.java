@@ -26,7 +26,7 @@ public class FinalRank {
 
             //Write result on file
             try {
-                //writer.write(""+key.split("_")[1]+",");
+                writer.write(""+key.split("_")[1]+",");
 
                 for(int i=0;i<finalRank.length;i++){
                     writer.write("("+finalRank[i].split("_")[0]+","+finalRank[i].split("_")[1]+"),");

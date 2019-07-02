@@ -39,7 +39,7 @@ public class Query1RankWindows extends RichMapFunction<Tuple2<String,Integer>,Tu
     @Override
     public Tuple2<String, Integer> map(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
         com.codahale.metrics.Meter dropwizard = new com.codahale.metrics.Meter();
-        this.meter = getRuntimeContext().getMetricGroup().addGroup("Query1").meter("throughput_rank "+FileUtils.getId(this.file), new DropwizardMeterWrapper(dropwizard));
+        this.meter = getRuntimeContext().getMetricGroup().addGroup("Query1").meter("throughput_final_rank "+FileUtils.getId(this.file), new DropwizardMeterWrapper(dropwizard));
         this.meter.markEvent();
         return stringIntegerTuple2;
     }

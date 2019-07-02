@@ -2,7 +2,6 @@ package kafkastream;
 
 import flink.utils.flink.query2.Query2Parser;
 import flink.utils.kafka.KafkaProperties;
-import kafka.log.TimestampOffset;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.connect.data.Time;
 import org.apache.kafka.streams.KafkaStreams;

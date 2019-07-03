@@ -21,7 +21,9 @@ public class PartialArticleRank {
     public synchronized void rank() {
 
         Jedis jedis=new Jedis("localhost");
+        //Add element with score equal to value(negative for reverse ordering)
         jedis.zadd(this.key,-1*tupleWindows.f1,tupleWindows.f0+"_"+tupleWindows.f1);
+        //In this case remove the elements from 4th to the end position for computing the rank efficiently
         if(jedis.zcard(this.key)>=4)
             jedis.zremrangeByRank(this.key,4,-1);
         jedis.close();

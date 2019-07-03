@@ -19,8 +19,10 @@ public class PartialUserRank {
     public synchronized void rank() {
 
         Jedis jedis=new Jedis("localhost");
+        //Add element with score equal to value(negative for reverse ordering)
         jedis.zadd(this.key,-1*tupleWindows.f1,tupleWindows.f0+"_"+tupleWindows.f1);
 
+        //In this case remove the elements from 10th to the end for computing the rank efficiently
         if(jedis.zcard(this.key)>=11){
            // Set<String> rankElements = jedis.zrange(key, 0, 9);
             //HashMap<Float, String> hashMapRank = new HashMap<>();

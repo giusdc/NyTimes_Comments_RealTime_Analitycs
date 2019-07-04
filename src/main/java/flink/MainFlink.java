@@ -23,6 +23,7 @@ public class MainFlink {
 
     public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv","commentdaily.csv","commentweekly.csv","commentmonthly.csv"};
 
+    //public static String addressRedis="54.227.0.62";
     public static int offsetDay=-3;
     public static int offsetHours=1;
     public static boolean setOffset=true;
@@ -51,8 +52,8 @@ public class MainFlink {
 
 
        Query1.process(stream);
-       Query2.process(stream);
-       Query3.process(stream);
+       //Query2.process(stream);
+       //Query3.process(stream);
 
         //Process Query
         env.execute();

@@ -28,7 +28,6 @@ public class Query1RankWindows extends RichMapFunction<Tuple2<String,Integer>,Tu
         //Get the key for searching in the db
         String id= FileUtils.getId(file)+"1"+"_"+(timeWindow.getStart()-lag);
         BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
-        writer.write(""+(timeWindow.getStart()-lag));
         new FinalRank(id,writer,3).getRank();
 
     }

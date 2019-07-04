@@ -86,7 +86,10 @@
               </filters>
               <transformers>
                 <transformer>
-                  <mainClass>kafka.Simulator</mainClass>
+                  <mainClass>flink.MainFlink</mainClass>
+                </transformer>
+                <transformer>
+                  <resource>reference.conf</resource>
                 </transformer>
               </transformers>
             </configuration>

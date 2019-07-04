@@ -23,6 +23,9 @@ public class Query2Result implements AllWindowFunction<Tuple2<String, Integer>, 
 
     @Override
     public void apply(TimeWindow timeWindow, Iterable<Tuple2<String, Integer>> iterable, Collector<Object> collector) throws Exception {
+        if(this.file.equals("commentmonthly.csv")){
+            System.out.println();
+        }
         BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
         writer.write(timeWindow.getStart()-lag+",");
         List<Tuple2<String,Integer>> list= Lists.newArrayList(iterable.iterator());

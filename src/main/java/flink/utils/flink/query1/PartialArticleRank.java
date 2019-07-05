@@ -1,5 +1,6 @@
 package flink.utils.flink.query1;
 
+import flink.MainFlink;
 import org.apache.flink.api.java.tuple.Tuple2;
 import redis.clients.jedis.Jedis;
 
@@ -20,7 +21,7 @@ public class PartialArticleRank {
 
     public synchronized void rank() {
 
-        Jedis jedis=new Jedis("localhost");
+        Jedis jedis=new Jedis(MainFlink.redisAddress);
         //Add element with score equal to value(negative for reverse ordering)
         jedis.zadd(this.key,-1*tupleWindows.f1,tupleWindows.f0+"_"+tupleWindows.f1);
         //In this case remove the elements from 4th to the end position for computing the rank efficiently

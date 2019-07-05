@@ -1,5 +1,6 @@
 package flink.utils.kafka;
 
+import flink.MainFlink;
 import kafkastream.MyEventTimeExtractor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
@@ -11,7 +12,8 @@ import java.util.Properties;
 public class KafkaProperties {
     public static Properties getProperties(){
         Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
+
+        props.put("bootstrap.servers", MainFlink.kafkaAddress+":9092");
         props.put("group.id", "test-consumer-group");
         return props;
     }
@@ -23,7 +25,7 @@ public class KafkaProperties {
         props.put(StreamsConfig.CLIENT_ID_CONFIG,
                 "map-function-lambda-example-client");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "localhost:9092");
+                MainFlink.kafkaAddress+":9092");
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
                 Serdes.String().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,

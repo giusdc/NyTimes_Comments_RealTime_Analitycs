@@ -1,5 +1,5 @@
 package flink.query;
-import flink.utils.flink.query1.CustomWindow;
+//import flink.utils.flink.query1.CustomWindow;
 import flink.utils.flink.query2.Query2Parser;
 import flink.utils.flink.query2.Query2Result;
 import org.apache.flink.api.common.typeinfo.Types;

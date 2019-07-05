@@ -1,5 +1,6 @@
 package flink.utils.flink.query3;
 
+import flink.MainFlink;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple5;
 import org.apache.flink.api.java.tuple.Tuple6;
@@ -12,7 +13,7 @@ public class KeyMapper implements FlatMapFunction<Tuple6<Long, String, String, L
         if (x.f1.equals("comment"))
             collector.collect(new Tuple5<>(x.f0, x.f1, x.f2, x.f3, x.f4));
         else {
-            Jedis jedis = new Jedis("localhost");
+            Jedis jedis=new Jedis(MainFlink.redisAddress);
             if (x.f5 > 2) {
                 String userId = jedis.get(String.valueOf(x.f4));
                 if (userId == null)

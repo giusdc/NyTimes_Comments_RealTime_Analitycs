@@ -24,10 +24,18 @@ public class MainFlink {
     public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv","commentdaily.csv","commentweekly.csv","commentmonthly.csv"};
 
     //public static String addressRedis="54.227.0.62";
+
+    public static String kafkaAddress;
+    public static String redisAddress;
     public static int offsetDay=-3;
     public static int offsetHours=1;
     public static boolean setOffset=true;
+
     public static void main(String[] args) throws Exception {
+
+        kafkaAddress= args[0];
+        redisAddress= args[1];
+
         createFile(pathList);
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();

@@ -9,9 +9,12 @@ import org.apache.flink.util.Collector;
 
 public class Query3Rank extends ProcessWindowFunction<Tuple2<Long, Float>, Tuple2<Long, Float>, Tuple, TimeWindow> {
 
-    String file;
-    public  Query3Rank(String file) {
+    private String file;
+    private String redisAddress;
+
+    public  Query3Rank(String file,String redisAddress) {
         this.file=file;
+        this.redisAddress=redisAddress;
     }
 
 
@@ -23,6 +26,6 @@ public class Query3Rank extends ProcessWindowFunction<Tuple2<Long, Float>, Tuple
         Tuple2<Long, Float> tupleWindows = iterable.iterator().next();
         String id= FileUtils.getId(file)+"3"+"_"+context.window().getStart();
         collector.collect(((Tuple2<Long, Float>) iterable.iterator().next()));
-        new PartialUserRank(id,tupleWindows).rank();
+        new PartialUserRank(id,tupleWindows,this.redisAddress).rank();
     }
 }

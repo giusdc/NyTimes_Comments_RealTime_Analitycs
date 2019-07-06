@@ -8,6 +8,8 @@ import org.apache.flink.streaming.api.functions.windowing.AllWindowFunction;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 import flink.utils.other.FileUtils;
+import org.apache.kafka.common.protocol.types.Field;
+
 import java.io.*;
 
 public class Query1RankWindows extends RichMapFunction<Tuple2<String,Integer>,Tuple2<String,Integer>> implements AllWindowFunction<Tuple2<String, Integer>, Object, TimeWindow> {
@@ -15,11 +17,13 @@ public class Query1RankWindows extends RichMapFunction<Tuple2<String,Integer>,Tu
     private String file="";
     private long lag;
     private transient Meter meter;
+    private String redisAddress;
 
 
-    public Query1RankWindows(String file, long lag) {
+    public Query1RankWindows(String file, long lag, String redisAddress) {
         this.file=file;
         this.lag=lag;
+        this.redisAddress=redisAddress;
     }
 
     @Override
@@ -28,7 +32,7 @@ public class Query1RankWindows extends RichMapFunction<Tuple2<String,Integer>,Tu
         //Get the key for searching in the db
         String id= FileUtils.getId(file)+"1"+"_"+(timeWindow.getStart()-lag);
         BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
-        new FinalRank(id,writer,3).getRank();
+        new FinalRank(id,writer,3,redisAddress).getRank();
 
     }
 

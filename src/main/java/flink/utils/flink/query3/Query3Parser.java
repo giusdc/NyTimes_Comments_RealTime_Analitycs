@@ -11,7 +11,7 @@ public class Query3Parser {
 
         Jedis jedis=new Jedis(MainFlink.redisAddress);
         //Delete a tuple after two weeks
-        jedis.setex(String.valueOf(x.f3),1200,String.valueOf(x.f13)+"_"+x.f8);
+        jedis.setex(String.valueOf(x.f3),2679/*31 giorni*/,String.valueOf(x.f13)+"_"+x.f8);
         jedis.close();
         if(x.f13==2073520)
             System.out.println();

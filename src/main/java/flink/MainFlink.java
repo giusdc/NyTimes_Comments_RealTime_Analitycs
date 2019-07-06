@@ -25,8 +25,8 @@ public class MainFlink {
 
     //public static String addressRedis="54.227.0.62";
 
-    public static String kafkaAddress;
-    public static String redisAddress;
+    volatile public static String kafkaAddress;
+    volatile public static String redisAddress;
     public static int offsetDay=-3;
     public static int offsetHours=1;
     public static boolean setOffset=true;
@@ -35,6 +35,7 @@ public class MainFlink {
 
         kafkaAddress= args[0];
         redisAddress= args[1];
+
 
         createFile(pathList);
         //Set environment
@@ -59,9 +60,9 @@ public class MainFlink {
         DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream =env.addSource(kafkasource);
 
 
-       Query1.process(stream);
-       //Query2.process(stream);
-       //Query3.process(stream);
+       Query1.process(stream,redisAddress);
+       Query2.process(stream);
+       Query3.process(stream,redisAddress);
 
         //Process Query
         env.execute();

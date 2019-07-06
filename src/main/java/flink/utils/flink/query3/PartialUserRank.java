@@ -10,16 +10,20 @@ import java.util.*;
 public class PartialUserRank {
     private String key;
     private Tuple2<Long,Float> tupleWindows;
-    public  PartialUserRank(String key, Tuple2<Long, Float> tupleWindows) {
+    private String redisAddress;
+
+
+    public  PartialUserRank(String key, Tuple2<Long, Float> tupleWindows,String redisAddress) {
         this.key=key;
         this.tupleWindows=tupleWindows;
+        this.redisAddress=redisAddress;
     }
 
 
 
     public synchronized void rank() {
 
-        Jedis jedis=new Jedis(MainFlink.redisAddress);
+        Jedis jedis=new Jedis(this.redisAddress);
         //Add element with score equal to value(negative for reverse ordering)
         jedis.zadd(this.key,-1*tupleWindows.f1,tupleWindows.f0+"_"+tupleWindows.f1);
 

@@ -12,9 +12,11 @@ import flink.utils.other.FileUtils;
 public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, Tuple2<String, Integer>, Tuple, TimeWindow> {
 
     private transient Meter meter;
+    private String redisAddress;
     String file;
-    public  Query1Rank(String file) {
+    public  Query1Rank(String file, String redisAddress) {
         this.file=file;
+        this.redisAddress=redisAddress;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, T
         String id= FileUtils.getId(file)+"1"+"_"+context.window().getStart();
         Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
         collector.collect(iterable.iterator().next());
-        new PartialArticleRank(id,tupleWindows).rank();
+        new PartialArticleRank(id,tupleWindows,redisAddress).rank();
 
     }
 

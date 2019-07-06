@@ -18,7 +18,7 @@ public class Query3 {
         //Mapper
         DataStream<Tuple6<Long, String, String, Long, Long, Integer>> mapper = stream
                 .filter(x->x.f0!=-1)
-                .map(x -> Query3Parser.parse(x))
+                .map(x -> Query3Parser.parse(x,redisAddress))
                 .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG,Types.INT));
 
         //Daily direct comments'statistics
@@ -32,7 +32,7 @@ public class Query3 {
 
         //Daily indirect comments'statistics
         DataStream<Tuple2<Long, Float>> dailyIndirect = mapper
-                .flatMap(new KeyMapper())
+                .flatMap(new KeyMapper(redisAddress))
                 .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG))
                 .filter(x->x.f0!=null)
                 .keyBy(0)

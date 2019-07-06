@@ -7,9 +7,9 @@ import org.apache.flink.api.java.tuple.Tuple6;
 import redis.clients.jedis.Jedis;
 
 public class Query3Parser {
-    public  synchronized static Tuple6<Long, String,String,Long,Long,Integer> parse(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> x) {
+    public  synchronized static Tuple6<Long, String,String,Long,Long,Integer> parse(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> x, String redisAddress) {
 
-        Jedis jedis=new Jedis(MainFlink.redisAddress);
+        Jedis jedis=new Jedis(redisAddress);
         //Delete a tuple after two weeks
         jedis.setex(String.valueOf(x.f3),2679/*31 giorni*/,String.valueOf(x.f13)+"_"+x.f8);
         jedis.close();

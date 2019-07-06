@@ -21,15 +21,9 @@ import static flink.utils.other.FileUtils.createFile;
 
 public class MainFlink {
 
-    public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv","commentdaily.csv","commentweekly.csv","commentmonthly.csv"};
-
-    //public static String addressRedis="54.227.0.62";
-
+    public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv","commentdaily.csv","commentweekly.csv","commentmonthly.csv","query1latency.txt","query2latency.txt","query3latency.txt"};
     volatile public static String kafkaAddress;
     volatile public static String redisAddress;
-    public static int offsetDay=-3;
-    public static int offsetHours=1;
-    public static boolean setOffset=true;
 
     public static void main(String[] args) throws Exception {
 
@@ -42,10 +36,8 @@ public class MainFlink {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-        //env.enableCheckpointing(5000, CheckpointingMode.EXACTLY_ONCE);
         //Set Kafka properties
         Properties properties= KafkaProperties.getProperties();
-
         FlinkKafkaConsumerBase<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> kafkasource=new FlinkKafkaConsumer011<>("comments",new TopicDeserialization(), properties).setStartFromEarliest();
         //Set source
        kafkasource.assignTimestampsAndWatermarks(new AscendingTimestampExtractor<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>>() {
@@ -63,6 +55,7 @@ public class MainFlink {
        Query1.process(stream,redisAddress);
        Query2.process(stream);
        Query3.process(stream,redisAddress);
+
 
         //Process Query
         env.execute();

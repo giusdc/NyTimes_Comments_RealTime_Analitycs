@@ -13,7 +13,7 @@ public class KafkaProperties {
     public static Properties getProperties(){
         Properties props = new Properties();
 
-        props.put("bootstrap.servers", MainFlink.kafkaAddress+":9092");
+        props.put("bootstrap.servers", "localhost"+":9092");
         props.put("group.id", "test-consumer-group");
         return props;
     }

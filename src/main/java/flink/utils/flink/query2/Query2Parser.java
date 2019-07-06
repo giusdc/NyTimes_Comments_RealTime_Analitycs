@@ -1,11 +1,11 @@
 package flink.utils.flink.query2;
 
-import org.apache.flink.api.java.tuple.Tuple15;
-import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.tuple.Tuple3;
+import flink.metrics.LatencyTracker;
+import org.apache.flink.api.java.tuple.*;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Windowed;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -49,6 +49,17 @@ public class Query2Parser {
     }
 
 
+    public static Tuple4<String,String,Integer,Long> parseMetrics(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long> tuple) {
+        LocalDateTime triggerTime =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(tuple.f5*1000),
+                        ZoneOffset.UTC.normalized());
+        //Get the key based on the hours of the tuple
+        String key=getKey(triggerTime.getHour());
+        return new Tuple4<>(key,tuple.f4,1,tuple.f15);
+    }
 
-
+    public static Tuple2<String,Integer> removeCommentTypeMetrics(Tuple4<String, String, Integer, Long> x) throws IOException {
+        LatencyTracker.computeLatency(x.f3,System.nanoTime(),2);
+        return new Tuple2<>(x.f0,x.f2);
+    }
 }

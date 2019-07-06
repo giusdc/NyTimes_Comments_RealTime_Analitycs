@@ -1,5 +1,5 @@
 package flink.query;
-//import flink.utils.flink.query1.CustomWindow;
+//import flink.utils.flink.query1.MonthlyWindow;
 import flink.utils.flink.query2.Query2Parser;
 import flink.utils.flink.query2.Query2Result;
 import org.apache.flink.api.common.typeinfo.Types;
@@ -43,7 +43,7 @@ public class Query2 {
 /*
         DataStream<Tuple2<String, Integer>> countMonthly = countHours
                 .keyBy(0)
-                .window(new CustomWindow())
+                .window(new MonthlyWindow())
                 .sum(1);*/
 
         //Getting result
@@ -56,7 +56,7 @@ public class Query2 {
                 .apply(new Query2Result("commentweekly.csv",604800000-1));
 
         countMonthly
-                //.windowAll(new CustomWindow())
+                //.windowAll(new MonthlyWindow())
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(new Query2Result("commentmonthly.csv",2592000000L-1));
     }

@@ -25,7 +25,7 @@ public class KafkaStreamMain {
 
         final Properties props = KafkaProperties.createStreamProperties();
         final StreamsBuilder builder = new StreamsBuilder();
-        KStream<String, Long> comments1hour = builder
+        KStream<String, Long> commentsDaily = builder
                 .stream("comments", Consumed.with(Serdes.String(),
                         Serdes.String(), new MyEventTimeExtractor(), Topology.AutoOffsetReset.EARLIEST))
                 .map((x, y) -> Query2ParserKafkaStream.getKeyValue((y)))
@@ -44,14 +44,22 @@ public class KafkaStreamMain {
                 .toStream()
                 .selectKey((x, y) -> x.key());
 
-         comments1hour
-                 .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
-                 .windowedBy(TimeWindows.of(Duration.ofHours(24*7)).advanceBy(Duration.ofHours(24)))
-                 .reduce((x, y) -> x + y)
-                 .suppress(Suppressed.untilWindowCloses(unbounded()))
-                 .toStream()
-                 .selectKey((x,y)->x.key())
-                 .print(Printed.toSysOut());
+        KStream<String, Long> commentsWeekly = commentsDaily
+                .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
+                .windowedBy(TimeWindows.of(Duration.ofHours(24 * 7)).advanceBy(Duration.ofHours(24)))
+                .reduce((x, y) -> x + y)
+                .suppress(Suppressed.untilWindowCloses(unbounded()))
+                .toStream()
+                .selectKey((x, y) -> x.key());
+
+        KStream<String, Long> commentsMonthly = commentsDaily
+                .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
+                .windowedBy(TimeWindows.of(Duration.ofHours(24 * 7 * 30)).advanceBy(Duration.ofHours(24)))
+                .reduce((x, y) -> x + y)
+                .suppress(Suppressed.untilWindowCloses(unbounded()))
+                .toStream()
+                .selectKey((x, y) -> x.key()); 
+                //.print(Printed.toSysOut());
 
 
 

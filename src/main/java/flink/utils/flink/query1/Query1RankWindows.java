@@ -12,11 +12,10 @@ import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.*;
 
-public class Query1RankWindows extends RichMapFunction<Tuple2<String,Integer>,Tuple2<String,Integer>> implements AllWindowFunction<Tuple2<String, Integer>, Object, TimeWindow> {
+public class Query1RankWindows  implements AllWindowFunction<Tuple2<String, Integer>, Object, TimeWindow> {
 
     private String file="";
     private long lag;
-    private transient Meter meter;
     private String redisAddress;
 
 
@@ -34,17 +33,6 @@ public class Query1RankWindows extends RichMapFunction<Tuple2<String,Integer>,Tu
         BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
         new FinalRank(id,writer,3,redisAddress).getRank();
 
-    }
-
-
-
-
-    @Override
-    public Tuple2<String, Integer> map(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
-        com.codahale.metrics.Meter dropwizard = new com.codahale.metrics.Meter();
-        this.meter = getRuntimeContext().getMetricGroup().addGroup("Query1").meter("throughput_final_rank "+FileUtils.getId(this.file), new DropwizardMeterWrapper(dropwizard));
-        this.meter.markEvent();
-        return stringIntegerTuple2;
     }
 }
 

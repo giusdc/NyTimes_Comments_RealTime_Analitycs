@@ -53,16 +53,16 @@ public class Query2 {
         //Getting result
         countHours
                 .windowAll(TumblingEventTimeWindows.of(Time.days(1)))
-                .apply(new Query2Result("commentdaily.csv"));
+                .apply(new Query2Result("results/commentdaily.csv"));
 
         countWeekly
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("commentweekly.csv"));
+                .apply(new Query2Result("results/commentweekly.csv"));
 
         countMonthly
                 //.windowAll(new MonthlyWindow())
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("commentmonthly.csv"));
+                .apply(new Query2Result("results/commentmonthly.csv"));
     }
 
     public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream) {
@@ -101,15 +101,15 @@ public class Query2 {
         //Getting result
         countHours
                 .windowAll(TumblingEventTimeWindows.of(Time.days(1)))
-                .apply(new Query2Result("commentdaily.csv"));
+                .apply(new Query2Result("results/commentdaily.csv"));
 
         countWeekly
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("commentweekly.csv"));
+                .apply(new Query2Result("results/commentweekly.csv"));
 
         countMonthly
                 //.windowAll(new MonthlyWindow())
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("commentmonthly.csv"));
+                .apply(new Query2Result("results/commentmonthly.csv"));
     }
 }

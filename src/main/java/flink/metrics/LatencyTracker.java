@@ -13,23 +13,23 @@ public class LatencyTracker {
         BufferedWriter writer;
         switch (index){
             case 1:
-                writer = new BufferedWriter(new FileWriter("query1latency.txt",true));
+                writer = new BufferedWriter(new FileWriter("metrics/query1latency.txt",true));
                 writer.write(latency+"\n");
                 writer.close();
                 break;
 
             case 2:
-                writer = new BufferedWriter(new FileWriter("query2latency.txt",true));
+                writer = new BufferedWriter(new FileWriter("metrics/query2latency.txt",true));
                 writer.write(latency+"\n");
                 writer.close();
                 break;
             case 3:
-                writer = new BufferedWriter(new FileWriter("query3latencydirect.txt",true));
+                writer = new BufferedWriter(new FileWriter("metrics/query3latencydirect.txt",true));
                 writer.write(latency+"\n");
                 writer.close();
                 break;
             case 4:
-                writer = new BufferedWriter(new FileWriter("query3latencyindirect.txt",true));
+                writer = new BufferedWriter(new FileWriter("metrics/query3latencyindirect.txt",true));
                 writer.write(latency+"\n");
                 writer.close();
                 break;

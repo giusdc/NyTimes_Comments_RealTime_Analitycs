@@ -30,7 +30,6 @@ public class MainFlink {
         kafkaAddress= args[0];
         redisAddress= args[1];
 
-
         createFile(pathList);
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();

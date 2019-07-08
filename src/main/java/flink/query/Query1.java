@@ -38,33 +38,33 @@ public class Query1 {
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(1)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankhourly.csv",redisAddress));
+                .aggregate(new Query1Aggregate(), new Query1Rank("results/rankhourly.csv",redisAddress));
 
         //Daily statistics
         DataStream<Tuple2<String, Integer>> rankDaily = rank1h
                          .keyBy(0)
                          .window(SlidingEventTimeWindows.of(Time.days(1),Time.hours(1)))
-                         .aggregate(new Query1Aggregate(), new Query1Rank("rankdaily.csv",redisAddress));
+                         .aggregate(new Query1Aggregate(), new Query1Rank("results/rankdaily.csv",redisAddress));
 
        //Week statistics
         DataStream<Tuple2<String, Integer>> rankWeek = rank1h
                 .keyBy(0)
                 .window(SlidingEventTimeWindows.of(Time.days(7),Time.days(1)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankweekly.csv",redisAddress));
+                .aggregate(new Query1Aggregate(), new Query1Rank("results/rankweekly.csv",redisAddress));
 
         //Getting rank
        rank1h
                .timeWindowAll(Time.milliseconds(1))
                .apply(
-                new Query1RankWindows("rankhourly.csv",3600000-1,redisAddress));
+                new Query1RankWindows("results/rankhourly.csv",3600000-1,redisAddress));
        rankDaily
                .timeWindowAll(Time.milliseconds(1))
                .apply(
-                new Query1RankWindows("rankdaily.csv",86400000-1,redisAddress));
+                new Query1RankWindows("results/rankdaily.csv",86400000-1,redisAddress));
         rankWeek
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
-                new Query1RankWindows("rankweekly.csv",604800000-1,redisAddress));
+                new Query1RankWindows("results/rankweekly.csv",604800000-1,redisAddress));
     }
 
     public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String redisAddress) {
@@ -76,33 +76,33 @@ public class Query1 {
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(1)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankhourly.csv",redisAddress));
+                .aggregate(new Query1Aggregate(), new Query1Rank("results/rankhourly.csv",redisAddress));
 
         //Daily statistics
         DataStream<Tuple2<String, Integer>> rankDaily = rank1h
                 .keyBy(0)
                 .window(SlidingEventTimeWindows.of(Time.days(1),Time.hours(1)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankdaily.csv",redisAddress));
+                .aggregate(new Query1Aggregate(), new Query1Rank("results/rankdaily.csv",redisAddress));
 
         //Week statistics
         DataStream<Tuple2<String, Integer>> rankWeek = rank1h
                 .keyBy(0)
                 .window(SlidingEventTimeWindows.of(Time.days(7),Time.days(1)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankweekly.csv",redisAddress));
+                .aggregate(new Query1Aggregate(), new Query1Rank("results/rankweekly.csv",redisAddress));
 
         //Getting rank
         rank1h
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
-                        new Query1RankWindows("rankhourly.csv",3600000-1,redisAddress));
+                        new Query1RankWindows("results/rankhourly.csv",3600000-1,redisAddress));
         rankDaily
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
-                        new Query1RankWindows("rankdaily.csv",86400000-1,redisAddress));
+                        new Query1RankWindows("results/rankdaily.csv",86400000-1,redisAddress));
         rankWeek
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
-                        new Query1RankWindows("rankweekly.csv",604800000-1,redisAddress));
+                        new Query1RankWindows("results/rankweekly.csv",604800000-1,redisAddress));
     }
 }
 

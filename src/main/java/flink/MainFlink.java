@@ -18,10 +18,13 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumerBase;
 import java.util.Properties;
 
 import static flink.utils.other.FileUtils.createFile;
+import static flink.utils.other.FileUtils.createFileWithDir;
 
 public class MainFlink {
 
     public static String[] pathList={"rankhourly.csv","rankdaily.csv","rankweekly.csv","popdaily.csv","popweekly.csv","popmonthly.csv","commentdaily.csv","commentweekly.csv","commentmonthly.csv","query1latency.txt","query2latency.txt","query3latency.txt"};
+    public static String[] pathMetrics={"query1latency.txt","query2latency.txt","query3latencydirect.txt","query3latencyindirect.txt"};
+
     volatile public static String kafkaAddress;
     volatile public static String redisAddress;
 
@@ -30,7 +33,9 @@ public class MainFlink {
         kafkaAddress= args[0];
         redisAddress= args[1];
 
-        createFile(pathList);
+        //createFile(pathList);
+        createFileWithDir("metrics",pathList);
+        createFileWithDir("results",pathMetrics);
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);

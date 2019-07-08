@@ -1,6 +1,8 @@
 package flink.query;
 
 import flink.metrics.FilterMetrics;
+import flink.metrics.KeyMapperMetrics;
+import flink.metrics.Query3DirectAggregateMetric;
 import flink.metrics.Query3IndirectAggregateMetrics;
 import flink.utils.flink.query3.*;
 import org.apache.flink.api.common.typeinfo.Types;

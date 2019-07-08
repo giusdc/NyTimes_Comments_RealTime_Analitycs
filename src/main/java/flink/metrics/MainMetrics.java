@@ -1,12 +1,7 @@
 package flink.metrics;
 
-import flink.query.Query1;
-import flink.query.Query2;
 import flink.query.Query3;
 import flink.utils.kafka.KafkaProperties;
-import flink.utils.kafka.TopicDeserialization;
-import kafka.TopicDeserializationMetrics;
-import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple16;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;

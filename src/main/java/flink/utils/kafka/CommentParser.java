@@ -34,6 +34,15 @@ public class CommentParser {
                 return false;
             if (!(str[7].equals("False") || str[7].equals("True")))
                 return false;
+            if (str[4].equals("comment")) {
+                if (!(str[8].equals("0") && str[9].equals("")))
+                    return false;
+
+            }else
+            {
+                if(Integer.parseInt(str[8])<0)
+                    return false;
+            }
             if (Integer.parseInt(str[10]) < 0)
                 return false;
             if(Integer.parseInt(str[13])<0)

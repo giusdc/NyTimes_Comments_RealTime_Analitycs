@@ -46,6 +46,7 @@ public class KafkaStreamMain {
 
         KStream<String, Long> commentsWeekly = commentsDaily
                 .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
+                //.windowedBy(new KafkaWindow())
                 .windowedBy(TimeWindows.of(Duration.ofHours(24 * 7)).advanceBy(Duration.ofHours(24)))
                 .reduce((x, y) -> x + y)
                 .suppress(Suppressed.untilWindowCloses(unbounded()))

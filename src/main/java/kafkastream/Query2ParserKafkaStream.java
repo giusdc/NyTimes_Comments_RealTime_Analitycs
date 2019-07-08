@@ -13,6 +13,7 @@ import static flink.utils.flink.query2.Query2Parser.getKey;
 
 public class Query2ParserKafkaStream {
 
+    //TODO fare il controllo tuple errateeeeeee
     public static KeyValue<String,Long> getKeyValue(String x) {
 
         String tuple[]=x.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");

@@ -1,4 +1,4 @@
-package kafka;
+package flink.metrics;
 
 import flink.utils.kafka.CommentParser;
 import org.apache.flink.api.common.serialization.DeserializationSchema;

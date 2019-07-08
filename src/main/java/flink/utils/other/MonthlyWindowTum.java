@@ -1,8 +1,7 @@
-package flink.utils.flink.query1;
+package flink.utils.other;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
-import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.WindowAssigner;
 import org.apache.flink.streaming.api.windowing.time.Time;
@@ -10,12 +9,16 @@ import org.apache.flink.streaming.api.windowing.triggers.EventTimeTrigger;
 import org.apache.flink.streaming.api.windowing.triggers.Trigger;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-public class MonthlyWindow extends WindowAssigner<Object, org.apache.flink.streaming.api.windowing.windows.TimeWindow> {
+public class MonthlyWindowTum extends WindowAssigner<Object, TimeWindow> {
     //private long timeout;
     /*
     public MonthlyWindow(long timeout) {
@@ -23,7 +26,7 @@ public class MonthlyWindow extends WindowAssigner<Object, org.apache.flink.strea
     }*/
 
     @Override
-    public Collection<org.apache.flink.streaming.api.windowing.windows.TimeWindow> assignWindows(Object o, long timestamp, WindowAssignerContext windowAssignerContext) {
+    public Collection<TimeWindow> assignWindows(Object o, long timestamp, WindowAssignerContext windowAssignerContext) {
         /*
         if (timestamp > -9223372036854775808L) {
             LocalDateTime triggerTime =
@@ -45,38 +48,18 @@ public class MonthlyWindow extends WindowAssigner<Object, org.apache.flink.strea
 
             return windows;*/
 
-        if (timestamp <= -9223372036854775808L) {
-            throw new RuntimeException("Record has Long.MIN_VALUE timestamp (= no timestamp marker). Is the time characteristic set to 'ProcessingTime', or did you forget to call 'DataStream.assignTimestampsAndWatermarks(...)'?");
-        } else {
+        if (timestamp > -9223372036854775808L) {
 
-            /*Tuple3<String,Integer,Long> tuple3=(Tuple3<String,Integer,Long>)o;
-            long timestamp2=tuple3.f2*1000;*/
             LocalDateTime triggerTime =
                     LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
                             ZoneOffset.UTC.normalized());
-            LocalDateTime startDate = triggerTime.withHour(0).withMinute(0).withSecond(0).withNano(0);
-            long timestamp2=startDate.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
-            int days= startDate.toLocalDate().lengthOfMonth();
-            long size=Time.days(days).toMilliseconds();
-            //long size=getNumberofDays(timestamp);
-            long slide=Time.days(1).toMilliseconds();
-            LocalDateTime endDate;
-            List<org.apache.flink.streaming.api.windowing.windows.TimeWindow> windows = new ArrayList((int)(size/slide));
-            //long timestamp3=startDate.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
-            //long lastStart = timestamp- (timestamp + slide) % slide;
+            LocalDateTime start = triggerTime.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime end = triggerTime.withDayOfMonth(1).plusMonths(1).minusDays(1).withHour(23).withMinute(59).withSecond(59);
 
-            for(long start = timestamp2; windows.size()<days;) {
-                endDate=startDate.plusMonths(1).minusDays(1).withHour(23).withMinute(59).withSecond(59);
-                long end=endDate.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
-                windows.add(new TimeWindow(start, end));
-                startDate=startDate.minusDays(1);
-                start=startDate.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
-            }
-
-            return windows;
+            return Collections.singletonList(new TimeWindow(start.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli(),end.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli()));
+        } else {
+            throw new RuntimeException("Record has Long.MIN_VALUE timestamp (= no timestamp marker). Is the time characteristic set to 'ProcessingTime', or did you forget to call 'DataStream.assignTimestampsAndWatermarks(...)'?");
         }
-
-
 
 
             //long start = MonthlyWindow.getWindowStartWithOffset(timestamp, 0, timeout);
@@ -107,13 +90,13 @@ public class MonthlyWindow extends WindowAssigner<Object, org.apache.flink.strea
     }
 
     @Override
-    public Trigger<Object, org.apache.flink.streaming.api.windowing.windows.TimeWindow> getDefaultTrigger(StreamExecutionEnvironment streamExecutionEnvironment) {
+    public Trigger<Object, TimeWindow> getDefaultTrigger(StreamExecutionEnvironment streamExecutionEnvironment) {
         return EventTimeTrigger.create();
     }
 
     @Override
-    public TypeSerializer<org.apache.flink.streaming.api.windowing.windows.TimeWindow> getWindowSerializer(ExecutionConfig executionConfig) {
-        return new org.apache.flink.streaming.api.windowing.windows.TimeWindow.Serializer();
+    public TypeSerializer<TimeWindow> getWindowSerializer(ExecutionConfig executionConfig) {
+        return new TimeWindow.Serializer();
     }
 
     @Override

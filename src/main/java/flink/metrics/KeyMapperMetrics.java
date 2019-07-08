@@ -1,4 +1,4 @@
-package flink.utils.flink.query3;
+package flink.metrics;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple5;

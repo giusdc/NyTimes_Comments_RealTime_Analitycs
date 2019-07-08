@@ -24,8 +24,8 @@ public class Query3Rank extends ProcessWindowFunction<Tuple2<Long, Float>, Tuple
             System.out.println();
         }
         Tuple2<Long, Float> tupleWindows = iterable.iterator().next();
-        String id= FileUtils.getId(file)+"3"+"_"+context.window().getStart();
+        String id= FileUtils.getId(file)+"3"+"_"+context.window().getEnd();
         collector.collect(((Tuple2<Long, Float>) iterable.iterator().next()));
-        new PartialUserRank(id,tupleWindows,this.redisAddress).rank();
+        new PartialUserRank(id,tupleWindows,this.redisAddress,context.window().getStart()).rank();
     }
 }

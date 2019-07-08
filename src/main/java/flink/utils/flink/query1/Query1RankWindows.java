@@ -12,26 +12,28 @@ import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.*;
 
-public class Query1RankWindows  implements AllWindowFunction<Tuple2<String, Integer>, Object, TimeWindow> {
+public class Query1RankWindows  implements AllWindowFunction<Tuple2<String, Integer>, String, TimeWindow> {
 
     private String file="";
-    private long lag;
     private String redisAddress;
 
 
-    public Query1RankWindows(String file, long lag, String redisAddress) {
+    public Query1RankWindows(String file, String redisAddress) {
         this.file=file;
-        this.lag=lag;
         this.redisAddress=redisAddress;
     }
 
     @Override
-    public void apply(TimeWindow timeWindow, Iterable<Tuple2<String, Integer>> iterable, Collector<Object> collector) throws Exception {
+    public void apply(TimeWindow timeWindow, Iterable<Tuple2<String, Integer>> iterable, Collector<String> collector) throws Exception {
 
         //Get the key for searching in the db
-        String id= FileUtils.getId(file)+"1"+"_"+(timeWindow.getStart()-lag);
+        if(file.equals("rankdaily.csv"))
+            System.out.println();
+        String id= FileUtils.getId(file)+"1"+"_"+(timeWindow.getEnd());
         BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
-        new FinalRank(id,writer,3,redisAddress).getRank();
+        //new FinalRank(id,writer,3,redisAddress).getRank();
+        collector.collect(new FinalRank(id,writer,3,redisAddress).getRank());
+
 
     }
 }

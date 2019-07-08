@@ -26,41 +26,35 @@ public class FinalRank {
         this.key = key;
         this.writer = writer;
         this.position = position;
-        this.redisAddress=redisAddress;
+        this.redisAddress = redisAddress;
     }
 
 
-    public synchronized void getRank() {
+    public synchronized String getRank() {
 
         //Get position element from Redis
         JedisPool pool = new JedisPool(this.redisAddress, 6379);
         //Jedis jedis=new Jedis(MainFlink.redisAddress);
         Jedis jedis = pool.getResource();
-        Set<String> rank = jedis.zrange(key, 0, 9);
+        Set<String> rank = jedis.zrange(key, 0, position - 1);
         String[] finalRank = rank.toArray(new String[0]);
-
+        String result = "";
         //Write result on file
-        try {
-            String triggerTime =
-                    LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(key.split("_")[1])),
-                            ZoneOffset.UTC.normalized()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
-            writer.write("" + triggerTime + ",");
-
-            for (int i = 0; i < finalRank.length; i++) {
-                writer.write("(" + finalRank[i].split("_")[0] + "," + finalRank[i].split("_")[1] + "),");
-                if (i == position - 1)
-                    break;
-            }
-            writer.write("\n");
-            jedis.del(this.key);
-            writer.close();
-            jedis.close();
-            pool.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        String triggerTime =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(finalRank[0].split("_")[2])),
+                        ZoneOffset.UTC.normalized()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+        result += triggerTime + ",";
+        for (int i = 0; i < finalRank.length; i++) {
+            result += "(" + finalRank[i].split("_")[0] + "," + finalRank[i].split("_")[1] + "),";
+            if (i == position - 1)
+                break;
         }
+        jedis.del(this.key);
+        jedis.close();
+        pool.close();
+        return result;
+
 
     }
-
 }
 

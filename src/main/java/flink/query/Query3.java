@@ -5,6 +5,7 @@ import flink.metrics.KeyMapperMetrics;
 import flink.metrics.Query3DirectAggregateMetric;
 import flink.metrics.Query3IndirectAggregateMetrics;
 import flink.utils.flink.query3.*;
+import flink.utils.other.MonthlyWindowTum;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.*;
@@ -51,27 +52,30 @@ public class Query3 {
                 .apply(new JoinValues())
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
-                .process(new Query3Rank("results/popdaily.csv",redisAddress));
+                .process(new Query3Rank("popdaily.csv",redisAddress))
+                .setParallelism(3);
 
         //Weekly statistics
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)
-                .window(SlidingEventTimeWindows.of(Time.days(7), Time.days(1)))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("results/popweekly.csv",redisAddress));
+                .window(TumblingEventTimeWindows.of(Time.days(7),Time.days(-3)))
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popweekly.csv",redisAddress))
+                .setParallelism(3);
 
         //Monthly statistics
         DataStream<Tuple2<Long, Float>> rankMonthly = rankDaily
                 .keyBy(0)
-                .window(SlidingEventTimeWindows.of(Time.days(30),Time.days(1)))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("results/popmonthly.csv",redisAddress));
+                .window(new MonthlyWindowTum())
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popmonthly.csv",redisAddress))
+                .setParallelism(3);
 
         //Get results
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("results/popdaily.csv",86400000-1,redisAddress));
+                new Query3RankWindows("popdaily.csv",redisAddress));
         rankWeekly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("results/popweekly.csv",604800000-1,redisAddress));
+                new Query3RankWindows("popweekly.csv",redisAddress));
         rankMonthly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("results/popmonthly.csv",2592000000L-1,redisAddress));
+                new Query3RankWindows("popmonthly.csv",redisAddress));
 
     }
 
@@ -114,27 +118,30 @@ public class Query3 {
                 .apply(new JoinValues())
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
-                .process(new Query3Rank("results/popdaily.csv",redisAddress));
+                .process(new Query3Rank("popdaily.csv",redisAddress))
+                .setParallelism(3);
 
         //Weekly statistics
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)
                 .window(SlidingEventTimeWindows.of(Time.days(7), Time.days(1)))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("results/popweekly.csv",redisAddress));
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popweekly.csv",redisAddress))
+                .setParallelism(3);
 
         //Monthly statistics
         DataStream<Tuple2<Long, Float>> rankMonthly = rankDaily
                 .keyBy(0)
                 .window(SlidingEventTimeWindows.of(Time.days(30),Time.days(1)))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("results/popmonthly.csv",redisAddress));
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popmonthly.csv",redisAddress))
+                .setParallelism(3);
 
         //Get results
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("results/popdaily.csv",86400000-1,redisAddress));
+                new Query3RankWindows("popdaily.csv",redisAddress));
         rankWeekly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("results/popweekly.csv",604800000-1,redisAddress));
+                new Query3RankWindows("results/popweekly.csv",redisAddress));
         rankMonthly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("results/popmonthly.csv",2592000000L-1,redisAddress));
+                new Query3RankWindows("results/popmonthly.csv",redisAddress));
 
 
 

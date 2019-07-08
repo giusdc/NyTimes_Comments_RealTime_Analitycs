@@ -1,13 +1,13 @@
 package flink.query;
 //import flink.utils.flink.query1.MonthlyWindow;
 import flink.utils.flink.query1.MonthlyWindow;
-import flink.utils.flink.query2.Query2Parser;
-import flink.utils.flink.query2.Query2Result;
+import flink.utils.flink.query2.*;
 import flink.utils.other.MonthlyWindowTum;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple16;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
@@ -19,8 +19,8 @@ public class Query2 {
     public static void process(DataStream<Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String>> stream) {
 
         //Compute count each 2 hours
-        DataStream<Tuple2<String, Integer>> countHours = stream
-                .filter(x->x.f0!=-1)
+        DataStream<Tuple3<String, Integer, Long>> countHours = stream
+                .filter(x -> x.f0 != -1)
                 .map(x -> Query2Parser.parse(x))
                 .returns(Types.TUPLE(Types.STRING, Types.STRING, Types.INT))
                 .filter(x -> x.f1.equals("comment"))
@@ -28,88 +28,82 @@ public class Query2 {
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(2)))
-                .sum(1);
+                .aggregate(new CountAggregateComments(), new CountProcessComments())
+                .setParallelism(3);
 
 
         //Week statistics
-        DataStream<Tuple2<String, Integer>> countWeekly=countHours
+        DataStream<Tuple3<String, Integer, Long>> countWeekly = countHours
                 .keyBy(0)
-                //.window(TumblingEventTimeWindows.of(Time.days(7),Time.days(-3)))
-                .window(SlidingEventTimeWindows.of(Time.days(7),Time.days(1)))
-                .sum(1);
+                .window(TumblingEventTimeWindows.of(Time.days(7), Time.days(-3)))
+                .aggregate(new CountAggregateIntermediateComments(), new CountProcessComments())
+                .setParallelism(3);
 
         //Monthly statistics
-/*
-        DataStream<Tuple2<String, Integer>> countMonthly=countHours
-                .keyBy(0)
-                .window(SlidingEventTimeWindows.of(Time.days(30),Time.days(1)))
-                .sum(1);*/
 
-        DataStream<Tuple2<String, Integer>> countMonthly = countHours
+        DataStream<Tuple3<String, Integer, Long>> countMonthly = countHours
                 .keyBy(0)
                 .window(new MonthlyWindowTum())
-                .sum(1);
+                .aggregate(new CountAggregateIntermediateComments(), new CountProcessComments())
+                .setParallelism(3);
+
 
         //Getting result
         countHours
                 .windowAll(TumblingEventTimeWindows.of(Time.days(1)))
-                .apply(new Query2Result("results/commentdaily.csv"));
+                .apply(new Query2Result("commentdaily.csv"));
 
         countWeekly
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("results/commentweekly.csv"));
+                .apply(new Query2Result("commentweekly.csv"));
 
         countMonthly
                 //.windowAll(new MonthlyWindow())
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("results/commentmonthly.csv"));
+                .apply(new Query2Result("commentmonthly.csv"));
     }
 
     public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream) {
         //Compute count each 2 hours
-        DataStream<Tuple2<String, Integer>> countHours = stream
-                .filter(x->x.f0!=-1)
+        DataStream<Tuple3<String, Integer, Long>> countHours = stream
+                .filter(x -> x.f0 != -1)
                 .map(x -> Query2Parser.parseMetrics(x))
-                .returns(Types.TUPLE(Types.STRING, Types.STRING, Types.INT,Types.LONG))
+                .returns(Types.TUPLE(Types.STRING, Types.STRING, Types.INT, Types.LONG))
                 .filter(x -> x.f1.equals("comment"))
                 .map(x -> Query2Parser.removeCommentTypeMetrics(x))
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(2)))
-                .sum(1);
+                .aggregate(new CountAggregateComments(), new CountProcessComments())
+                .setParallelism(3);
 
 
         //Week statistics
-        DataStream<Tuple2<String, Integer>> countWeekly=countHours
+        DataStream<Tuple3<String, Integer, Long>> countWeekly = countHours
                 .keyBy(0)
-                //.window(SlidingEventTimeWindows.of(Time.days(7),Time.days(1)))
-                .window(TumblingEventTimeWindows.of(Time.days(7),Time.days(-3)))
-                .sum(1);
+                .window(TumblingEventTimeWindows.of(Time.days(7), Time.days(-3)))
+                .aggregate(new CountAggregateIntermediateComments(), new CountProcessComments())
+                .setParallelism(3);
 
         //Monthly statistics
 
-        DataStream<Tuple2<String, Integer>> countMonthly=countHours
+        DataStream<Tuple3<String, Integer, Long>> countMonthly = countHours
                 .keyBy(0)
                 .window(new MonthlyWindowTum())
-                .sum(1);
-/*
-        DataStream<Tuple2<String, Integer>> countMonthly = countHours
-                .keyBy(0)
-                .window(new MonthlyWindow())
-                .sum(1);*/
+                .aggregate(new CountAggregateIntermediateComments(), new CountProcessComments())
+                .setParallelism(3);
 
         //Getting result
         countHours
                 .windowAll(TumblingEventTimeWindows.of(Time.days(1)))
-                .apply(new Query2Result("results/commentdaily.csv"));
+                .apply(new Query2Result("commentdaily.csv"));
 
         countWeekly
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("results/commentweekly.csv"));
+                .apply(new Query2Result("commentweekly.csv"));
 
         countMonthly
-                //.windowAll(new MonthlyWindow())
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("results/commentmonthly.csv"));
+                .apply(new Query2Result("commentmonthly.csv"));
     }
 }

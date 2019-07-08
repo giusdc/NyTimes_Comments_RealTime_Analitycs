@@ -33,9 +33,8 @@ public class MainFlink {
         kafkaAddress= args[0];
         redisAddress= args[1];
 
-        //createFile(pathList);
-        createFileWithDir("metrics",pathList);
-        createFileWithDir("results",pathMetrics);
+        createFile(pathList);
+
         //Set environment
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
@@ -57,8 +56,8 @@ public class MainFlink {
 
 
        Query1.process(stream,redisAddress);
-       Query2.process(stream);
-       Query3.process(stream,redisAddress);
+       //Query2.process(stream);
+       //Query3.process(stream,redisAddress);
 
 
         //Process Query

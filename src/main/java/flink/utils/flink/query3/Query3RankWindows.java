@@ -17,19 +17,17 @@ import java.util.*;
 public class Query3RankWindows implements AllWindowFunction<Tuple2<Long, Float>, Object, TimeWindow> {
 
     private String file="";
-    private long lag;
     private String redisAddress;
 
 
-    public Query3RankWindows(String file, long lag,String redisAddress) {
+    public Query3RankWindows(String file,String redisAddress) {
         this.file=file;
-        this.lag=lag;
         this.redisAddress=redisAddress;
     }
 
     @Override
     public synchronized void apply(TimeWindow timeWindow, Iterable<Tuple2<Long, Float>> iterable, Collector<Object> collector) throws Exception {
-        String id= FileUtils.getId(file)+"3"+"_"+(timeWindow.getStart()-lag);
+        String id= FileUtils.getId(file)+"3"+"_"+(timeWindow.getEnd());
         BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
         new FinalRank(id,writer,10, this.redisAddress).getRank();
     }

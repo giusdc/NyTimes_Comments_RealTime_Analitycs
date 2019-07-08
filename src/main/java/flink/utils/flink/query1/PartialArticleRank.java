@@ -14,10 +14,12 @@ public class PartialArticleRank {
     private String key;
     private String redisAddress;
     private Tuple2<String,Integer> tupleWindows;
-    public PartialArticleRank(String key, Tuple2<String, Integer> tupleWindows, String redisAddress) {
+    private long start;
+    public PartialArticleRank(String key, Tuple2<String, Integer> tupleWindows, String redisAddress, long start) {
         this.key=key;
         this.tupleWindows=tupleWindows;
         this.redisAddress=redisAddress;
+        this.start=start;
     }
 
 
@@ -29,7 +31,7 @@ public class PartialArticleRank {
         Jedis jedis= pool.getResource();
 
         //Add element with score equal to value(negative for reverse ordering)
-        jedis.zadd(this.key,-1*tupleWindows.f1,tupleWindows.f0+"_"+tupleWindows.f1);
+        jedis.zadd(this.key,-1*tupleWindows.f1,tupleWindows.f0+"_"+tupleWindows.f1+"_"+start);
         //In this case remove the elements from 4th to the end position for computing the rank efficiently
         if(jedis.zcard(this.key)>=4)
             jedis.zremrangeByRank(this.key,4,-1);

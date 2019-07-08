@@ -22,10 +22,10 @@ public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, T
     @Override
     public synchronized void process(Tuple tuple, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) {
         //Create the key from searching in the db
-        String id= FileUtils.getId(file)+"1"+"_"+context.window().getStart();
+        String id= FileUtils.getId(file)+"1"+"_"+context.window().getEnd();
         Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
         collector.collect(iterable.iterator().next());
-        new PartialArticleRank(id,tupleWindows,redisAddress).rank();
+        new PartialArticleRank(id,tupleWindows,redisAddress,context.window().getStart()).rank();
 
     }
 

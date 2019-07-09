@@ -63,7 +63,7 @@ public class KafkaStreamMain {
         commentsDaily
                 .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
                 //.windowedBy(TimeWindows.of(Duration.ofHours(24 * 30)).advanceBy(Duration.ofHours(24)))
-                .windowedBy(new KafkaWindow())
+                .windowedBy(TimeWindows.of(Duration.ofHours(24*30)).advanceBy(Duration.ofHours(24*7)))
                 .reduce((x, y) -> x + y)
                 .suppress(Suppressed.untilWindowCloses(unbounded()))
                 .toStream()

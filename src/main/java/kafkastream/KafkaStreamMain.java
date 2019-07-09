@@ -5,6 +5,8 @@ import kafkastream.kafkaoperators.MyEventTimeExtractor;
 import kafkastream.kafkaoperators.Query2Aggregator;
 import kafkastream.kafkaoperators.Query2Inizializer;
 import kafkastream.kafkaoperators.Query2ParserKafkaStream;
+import org.apache.flink.streaming.connectors.kafka.internals.metrics.KafkaMetricWrapper;
+import org.apache.kafka.common.metrics.KafkaMetric;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -60,7 +62,8 @@ public class KafkaStreamMain {
         //Monthly
         commentsDaily
                 .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
-                .windowedBy(TimeWindows.of(Duration.ofHours(24 * 30)).advanceBy(Duration.ofHours(24)))
+                //.windowedBy(TimeWindows.of(Duration.ofHours(24 * 30)).advanceBy(Duration.ofHours(24)))
+                .windowedBy(new KafkaWindow())
                 .reduce((x, y) -> x + y)
                 .suppress(Suppressed.untilWindowCloses(unbounded()))
                 .toStream()
@@ -85,7 +88,6 @@ public class KafkaStreamMain {
 
         //Start Kafka Streams
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);
-
         streams.cleanUp();
         streams.start();
         // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams

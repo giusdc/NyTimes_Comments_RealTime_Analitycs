@@ -27,7 +27,6 @@ public class PartialArticleRank {
     public synchronized void rank() {
 
         JedisPool pool = new JedisPool(this.redisAddress,6379);
-        //Jedis jedis=new Jedis(MainFlink.redisAddress);
         Jedis jedis= pool.getResource();
 
         //Add element with score equal to value(negative for reverse ordering)

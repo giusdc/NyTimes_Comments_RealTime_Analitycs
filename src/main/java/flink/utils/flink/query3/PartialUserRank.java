@@ -1,11 +1,10 @@
 package flink.utils.flink.query3;
 
-import flink.MainFlink;
+
 import org.apache.flink.api.java.tuple.Tuple2;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.params.ZAddParams;
+import redis.clients.jedis.JedisPool;
 
-import java.util.*;
 
 public class PartialUserRank {
     private String key;
@@ -25,7 +24,8 @@ public class PartialUserRank {
 
     public synchronized void rank() {
 
-        Jedis jedis=new Jedis(this.redisAddress);
+        JedisPool pool = new JedisPool(this.redisAddress,6379);
+        Jedis jedis= pool.getResource();
         //Add element with score equal to value(negative for reverse ordering)
         jedis.zadd(this.key,-1*tupleWindows.f1,tupleWindows.f0+"_"+tupleWindows.f1+"_"+start);
 
@@ -34,5 +34,6 @@ public class PartialUserRank {
             jedis.zremrangeByRank(this.key,10,-1);
         }
         jedis.close();
+        pool.close();
     }
 }

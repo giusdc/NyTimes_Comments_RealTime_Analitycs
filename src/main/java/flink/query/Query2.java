@@ -1,15 +1,11 @@
 package flink.query;
-//import flink.utils.flink.query1.MonthlyWindow;
-import flink.utils.flink.query1.MonthlyWindow;
 import flink.utils.flink.query2.*;
 import flink.utils.other.MonthlyWindowTum;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple16;
-import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
@@ -51,16 +47,18 @@ public class Query2 {
         //Getting result
         countHours
                 .windowAll(TumblingEventTimeWindows.of(Time.days(1)))
-                .apply(new Query2Result("commentdaily.csv"));
+                .apply(new Query2Result())
+                .writeAsText("commentdaily");
 
         countWeekly
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("commentweekly.csv"));
+                .apply(new Query2Result())
+                .writeAsText("commentweekly");
 
         countMonthly
-                //.windowAll(new MonthlyWindow())
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("commentmonthly.csv"));
+                .apply(new Query2Result())
+                .writeAsText("commentmonthly");
     }
 
     public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream) {
@@ -96,14 +94,17 @@ public class Query2 {
         //Getting result
         countHours
                 .windowAll(TumblingEventTimeWindows.of(Time.days(1)))
-                .apply(new Query2Result("commentdaily.csv"));
+                .apply(new Query2Result())
+                .writeAsText("commentdaily");
 
         countWeekly
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("commentweekly.csv"));
+                .apply(new Query2Result())
+                .writeAsText("commentweekly");
 
         countMonthly
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query2Result("commentmonthly.csv"));
+                .apply(new Query2Result())
+                .writeAsText("commentmonthly");
     }
 }

@@ -9,23 +9,21 @@ import org.apache.flink.util.Collector;
 
 public class Query3Rank extends ProcessWindowFunction<Tuple2<Long, Float>, Tuple2<Long, Float>, Tuple, TimeWindow> {
 
-    private String file;
+    private String type;
     private String redisAddress;
 
-    public  Query3Rank(String file,String redisAddress) {
-        this.file=file;
+    public  Query3Rank(String type,String redisAddress) {
+        this.type=type;
         this.redisAddress=redisAddress;
     }
 
 
     @Override
     public synchronized void process(Tuple tuple, Context context, Iterable<Tuple2<Long, Float>> iterable, Collector<Tuple2<Long, Float>> collector) throws Exception {
-        if(file.equals("popdaily.csv")){
-            System.out.println();
-        }
+
         Tuple2<Long, Float> tupleWindows = iterable.iterator().next();
-        String id= FileUtils.getId(file)+"3"+"_"+context.window().getEnd();
-        collector.collect(((Tuple2<Long, Float>) iterable.iterator().next()));
+        String id= type+"3"+"_"+context.window().getEnd();
+        collector.collect(iterable.iterator().next());
         new PartialUserRank(id,tupleWindows,this.redisAddress,context.window().getStart()).rank();
     }
 }

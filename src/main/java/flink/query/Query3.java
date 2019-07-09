@@ -30,9 +30,6 @@ public class Query3 {
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
                 .aggregate(new Query3DirectAggregate());
 
-
-
-
         //Daily indirect comments'statistics
         DataStream<Tuple2<Long, Float>> dailyIndirect = mapper
                 .flatMap(new KeyMapper(redisAddress))
@@ -52,30 +49,33 @@ public class Query3 {
                 .apply(new JoinValues())
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
-                .process(new Query3Rank("popdaily.csv",redisAddress))
+                .process(new Query3Rank("D",redisAddress))
                 .setParallelism(3);
 
         //Weekly statistics
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(7),Time.days(-3)))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popweekly.csv",redisAddress))
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("W",redisAddress))
                 .setParallelism(3);
 
         //Monthly statistics
         DataStream<Tuple2<Long, Float>> rankMonthly = rankDaily
                 .keyBy(0)
                 .window(new MonthlyWindowTum())
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popmonthly.csv",redisAddress))
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("M",redisAddress))
                 .setParallelism(3);
 
         //Get results
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("popdaily.csv",redisAddress));
+                new Query3RankWindows("D",redisAddress))
+                .writeAsText("popdaily");
         rankWeekly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("popweekly.csv",redisAddress));
+                new Query3RankWindows("W",redisAddress))
+                .writeAsText("popweekly");
         rankMonthly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("popmonthly.csv",redisAddress));
+                new Query3RankWindows("M",redisAddress))
+                .writeAsText("popmonthly");
 
     }
 
@@ -118,30 +118,33 @@ public class Query3 {
                 .apply(new JoinValues())
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
-                .process(new Query3Rank("popdaily.csv",redisAddress))
+                .process(new Query3Rank("D",redisAddress))
                 .setParallelism(3);
 
         //Weekly statistics
         DataStream<Tuple2<Long, Float>> rankWeekly = rankDaily
                 .keyBy(0)
                 .window(SlidingEventTimeWindows.of(Time.days(7), Time.days(1)))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popweekly.csv",redisAddress))
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("W",redisAddress))
                 .setParallelism(3);
 
         //Monthly statistics
         DataStream<Tuple2<Long, Float>> rankMonthly = rankDaily
                 .keyBy(0)
                 .window(SlidingEventTimeWindows.of(Time.days(30),Time.days(1)))
-                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("popmonthly.csv",redisAddress))
+                .aggregate(new Query3AggregateIntermediate(), new Query3Rank("M",redisAddress))
                 .setParallelism(3);
 
         //Get results
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("popdaily.csv",redisAddress));
+                new Query3RankWindows("D",redisAddress))
+                .writeAsText("popdaily");
         rankWeekly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("results/popweekly.csv",redisAddress));
+                new Query3RankWindows("W",redisAddress))
+                .writeAsText("popweekly");
         rankMonthly.timeWindowAll(Time.milliseconds(1)).apply(
-                new Query3RankWindows("results/popmonthly.csv",redisAddress));
+                new Query3RankWindows("M",redisAddress))
+                .writeAsText("popmonthly");
 
 
 

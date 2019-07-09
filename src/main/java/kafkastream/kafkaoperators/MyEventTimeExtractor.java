@@ -1,4 +1,4 @@
-package kafkastream;
+package kafkastream.kafkaoperators;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.streams.processor.TimestampExtractor;

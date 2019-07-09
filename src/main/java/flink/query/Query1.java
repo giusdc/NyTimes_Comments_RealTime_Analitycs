@@ -23,38 +23,40 @@ public class Query1 {
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(1)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankhourly.csv",redisAddress))
+                .aggregate(new Query1Aggregate(), new Query1Rank("H",redisAddress))
                 .setParallelism(3);
-/*
+
         //Daily statistics
         DataStream<Tuple2<String, Integer>> rankDaily = rank1h
                          .keyBy(0)
                          .window(TumblingEventTimeWindows.of(Time.days(1)))
-                         .aggregate(new Query1Aggregate(), new Query1Rank("rankdaily.csv",redisAddress))
+                         .aggregate(new Query1Aggregate(), new Query1Rank("D",redisAddress))
                          .setParallelism(3);
 
        //Week statistics
         DataStream<Tuple2<String, Integer>> rankWeek = rank1h
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(7),Time.days(-3)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankweekly.csv",redisAddress))
-                .setParallelism(3);*/
+                .aggregate(new Query1Aggregate(), new Query1Rank("W",redisAddress))
+                .setParallelism(3);
 
         //Getting rank
        rank1h
                .timeWindowAll(Time.milliseconds(1))
                .apply(
-                new Query1RankWindows("rankhourly.csv",redisAddress))
-                .writeAsText("commenthourly", FileSystem.WriteMode.NO_OVERWRITE);
-/*
+                new Query1RankWindows("H",redisAddress))
+                .writeAsText("rankhourly", FileSystem.WriteMode.NO_OVERWRITE);
+
        rankDaily
                .timeWindowAll(Time.milliseconds(1))
                .apply(
-                new Query1RankWindows("rankdaily.csv",redisAddress));
+                new Query1RankWindows("D",redisAddress))
+               .writeAsText("rankdaily", FileSystem.WriteMode.NO_OVERWRITE);
         rankWeek
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
-                new Query1RankWindows("rankweekly.csv",redisAddress));*/
+                new Query1RankWindows("W",redisAddress))
+                .writeAsText("rankweekly", FileSystem.WriteMode.NO_OVERWRITE);
     }
 
     public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String redisAddress) {
@@ -66,36 +68,38 @@ public class Query1 {
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(1)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankhourly.csv",redisAddress))
+                .aggregate(new Query1Aggregate(), new Query1Rank("H",redisAddress))
                 .setParallelism(3);
 
         //Daily statistics
         DataStream<Tuple2<String, Integer>> rankDaily = rank1h
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankdaily.csv",redisAddress))
+                .aggregate(new Query1Aggregate(), new Query1Rank("D",redisAddress))
                 .setParallelism(3);
 
         //Week statistics
         DataStream<Tuple2<String, Integer>> rankWeek = rank1h
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(7)))
-                .aggregate(new Query1Aggregate(), new Query1Rank("rankweekly.csv",redisAddress))
+                .aggregate(new Query1Aggregate(), new Query1Rank("W",redisAddress))
                 .setParallelism(3);
 
         //Getting rank
         rank1h
                 .timeWindowAll(Time.milliseconds(1))
-                .apply(new Query1RankWindows("rankhourly.csv",redisAddress))
-                .writeAsText("pluto");
-      /*  rankDaily
+                .apply(new Query1RankWindows("H",redisAddress))
+                .writeAsText("rankhourly", FileSystem.WriteMode.NO_OVERWRITE);
+        rankDaily
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
-                        new Query1RankWindows("rankdaily.csv",redisAddress));
+                        new Query1RankWindows("D",redisAddress))
+                .writeAsText("rankdaily", FileSystem.WriteMode.NO_OVERWRITE);
         rankWeek
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
-                        new Query1RankWindows("rankweekly.csv",redisAddress));*/
+                        new Query1RankWindows("W",redisAddress))
+                .writeAsText("rankweekly", FileSystem.WriteMode.NO_OVERWRITE);
     }
 }
 

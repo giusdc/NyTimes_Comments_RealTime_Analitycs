@@ -14,21 +14,23 @@ import java.io.FileWriter;
 import java.math.BigInteger;
 import java.util.*;
 
-public class Query3RankWindows implements AllWindowFunction<Tuple2<Long, Float>, Object, TimeWindow> {
+public class Query3RankWindows implements AllWindowFunction<Tuple2<Long, Float>, String, TimeWindow> {
 
-    private String file="";
+    private String type;
     private String redisAddress;
 
 
-    public Query3RankWindows(String file,String redisAddress) {
-        this.file=file;
+    public Query3RankWindows(String type,String redisAddress) {
+        this.type=type;
         this.redisAddress=redisAddress;
     }
 
     @Override
-    public synchronized void apply(TimeWindow timeWindow, Iterable<Tuple2<Long, Float>> iterable, Collector<Object> collector) throws Exception {
-        String id= FileUtils.getId(file)+"3"+"_"+(timeWindow.getEnd());
-        BufferedWriter writer = new BufferedWriter(new FileWriter(this.file,true));
-        new FinalRank(id,writer,10, this.redisAddress).getRank();
+    public synchronized void apply(TimeWindow timeWindow, Iterable<Tuple2<Long, Float>> iterable, Collector<String> collector) throws Exception {
+        if(type.equals("M"))
+            System.out.println();
+        String id= type+"3"+"_"+(timeWindow.getEnd());
+        collector.collect(new FinalRank(id,10, this.redisAddress).getRank());
+
     }
 }

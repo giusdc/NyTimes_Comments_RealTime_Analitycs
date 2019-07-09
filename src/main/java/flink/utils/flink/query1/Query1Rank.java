@@ -13,16 +13,16 @@ public class Query1Rank extends ProcessWindowFunction<Tuple2<String, Integer>, T
 
 
     private String redisAddress;
-    String file;
-    public  Query1Rank(String file, String redisAddress) {
-        this.file=file;
+    String type;
+    public  Query1Rank(String type, String redisAddress) {
+        this.type=type;
         this.redisAddress=redisAddress;
     }
 
     @Override
     public synchronized void process(Tuple tuple, Context context, Iterable<Tuple2<String, Integer>> iterable, Collector<Tuple2<String, Integer>> collector) {
         //Create the key from searching in the db
-        String id= FileUtils.getId(file)+"1"+"_"+context.window().getEnd();
+        String id= type+"1"+"_"+context.window().getEnd();
         Tuple2<String, Integer> tupleWindows = iterable.iterator().next();
         collector.collect(iterable.iterator().next());
         new PartialArticleRank(id,tupleWindows,redisAddress,context.window().getStart()).rank();

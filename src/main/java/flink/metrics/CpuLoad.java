@@ -48,8 +48,8 @@ public class CpuLoad {
         }
 
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(String.valueOf(response));
-        JsonObject value = (JsonObject) jsonObject.get("value");
-        return String.valueOf(value);
+        String value =  String.valueOf(jsonObject.get("value"));
+        return value;
 
 
     }

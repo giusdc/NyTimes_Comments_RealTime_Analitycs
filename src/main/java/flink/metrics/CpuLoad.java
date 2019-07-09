@@ -17,15 +17,19 @@ public class CpuLoad {
 
     public static void main(String[] args) throws Exception {
 
-        BufferedWriter writer = new BufferedWriter(
-                new FileWriter("cpu.txt",true));
-
+        BufferedWriter writer;
 
         for (int i = 0; i <800 ; i++) {
+
+            writer= new BufferedWriter(
+                    new FileWriter("cpu.txt",true));
+
             TimeUnit.MILLISECONDS.sleep(50);
             writer.write(sendGet(args[0])+"\n");
-
+            writer.close();
+            System.out.println(".");
         }
+
     }
 
 

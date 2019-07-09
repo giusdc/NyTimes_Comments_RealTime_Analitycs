@@ -1,8 +1,10 @@
 package flink.metrics;
 
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import scala.util.parsing.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,16 +17,18 @@ import java.util.concurrent.TimeUnit;
 
 public class CpuLoad {
 
+    private static JsonArray JsonArrayjsonObject;
+
     public static void main(String[] args) throws Exception {
 
         BufferedWriter writer;
 
-        for (int i = 0; i <800 ; i++) {
+        for (int i = 0; i <60; i++) {
 
             writer= new BufferedWriter(
                     new FileWriter("cpu.txt",true));
 
-            TimeUnit.MILLISECONDS.sleep(50);
+            TimeUnit.SECONDS.sleep(10);
             writer.write(sendGet(args[0])+"\n");
             writer.close();
             System.out.println(".");
@@ -50,10 +54,10 @@ public class CpuLoad {
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
+        JsonArrayjsonObject = (JsonArray) new JsonParser().parse(response.toString());
+        JsonObject ris = JsonArrayjsonObject.get(0).getAsJsonObject();
+        return String.valueOf(ris.get("value"));
 
-        JsonObject jsonObject = (JsonObject) new JsonParser().parse(String.valueOf(response));
-        String value =  String.valueOf(jsonObject.get("value"));
-        return value;
 
 
     }

@@ -86,7 +86,7 @@
               </filters>
               <transformers>
                 <transformer>
-                  <mainClass>flink.MainFlink</mainClass>
+                  <mainClass>flink.metrics.CpuLoad</mainClass>
                 </transformer>
                 <transformer>
                   <resource>reference.conf</resource>

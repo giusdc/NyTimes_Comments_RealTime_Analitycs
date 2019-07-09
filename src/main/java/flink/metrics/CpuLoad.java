@@ -20,7 +20,7 @@ public class CpuLoad {
         BufferedWriter writer = new BufferedWriter(
                 new FileWriter("cpu.txt",true));
 
-        
+
         for (int i = 0; i <800 ; i++) {
             TimeUnit.MILLISECONDS.sleep(50);
             writer.write(sendGet(args[0])+"\n");

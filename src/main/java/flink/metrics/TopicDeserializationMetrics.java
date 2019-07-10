@@ -8,22 +8,23 @@ import org.apache.flink.api.java.tuple.Tuple16;
 import org.apache.flink.api.java.typeutils.TupleTypeInfo;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public class TopicDeserializationMetrics implements DeserializationSchema<Tuple16<Long, String, Long, Long, String,
-        Long, Integer, String, Long, String, Long,String,String,Long,String,Long>> {
+        Long, Integer, String, Long, String, Long,String,String,Long,String, Instant>> {
     @Override
-    public Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long> deserialize(byte[] message) throws IOException {
+    public Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant> deserialize(byte[] message) throws IOException {
         String line = new String(message);
         return CommentParser.parseMetrics(line);
     }
 
     @Override
-    public boolean isEndOfStream(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long> longStringLongLongStringLongIntegerStringLongStringLongStringStringLongStringLongTuple16) {
+    public boolean isEndOfStream(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant> longStringLongLongStringLongIntegerStringLongStringLongStringStringLongStringLongTuple16) {
         return false;
     }
 
     @Override
-    public TypeInformation<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> getProducedType() {
+    public TypeInformation<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant>> getProducedType() {
         return new TupleTypeInfo<>(TypeInformation.of(Long.class),
                 TypeInformation.of(String.class),
                 TypeInformation.of(Long.class),
@@ -39,6 +40,6 @@ public class TopicDeserializationMetrics implements DeserializationSchema<Tuple1
                 TypeInformation.of(String.class),
                 TypeInformation.of(Long.class),
                 TypeInformation.of(String.class),
-                TypeInformation.of(Long.class));
+                TypeInformation.of(Instant.class));
     }
 }

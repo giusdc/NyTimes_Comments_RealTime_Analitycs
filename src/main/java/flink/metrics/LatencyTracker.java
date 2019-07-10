@@ -1,38 +1,44 @@
 package flink.metrics;
 
 import flink.utils.other.FileUtils;
+import kafka.ProducerKafka;
+import org.apache.kafka.clients.producer.Producer;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 
 public class LatencyTracker {
 
-    public static void computeLatency(long startTime,long endTime,int index) throws IOException {
-        double latency=(double) (endTime-startTime)/100000;
-        BufferedWriter writer;
+    public static void computeLatency(Instant start, Instant end, int index) throws IOException {
+        Producer<String, String> producer = ProducerKafka.setConfig();
+        double latency= (double)(Duration.between(start, end).toNanos())/Math.pow(10,6);
+
+
         switch (index){
             case 1:
-                writer = new BufferedWriter(new FileWriter("query1latency.txt",true));
-                writer.write(latency+"\n");
-                writer.close();
+                ProducerKafka.produce(producer,latency+"\n","query1latency");
+                producer.close();
                 break;
 
+
             case 2:
-                writer = new BufferedWriter(new FileWriter("query2latency.txt",true));
-                writer.write(latency+"\n");
-                writer.close();
+                ProducerKafka.produce(producer,latency+"\n","query2latency");
+                producer.close();
                 break;
+
             case 3:
-                writer = new BufferedWriter(new FileWriter("query3latencydirect.txt",true));
-                writer.write(latency+"\n");
-                writer.close();
+                ProducerKafka.produce(producer,latency+"\n","query3latencydir");
+                producer.close();
+
                 break;
             case 4:
-                writer = new BufferedWriter(new FileWriter("query3latencyindirect.txt",true));
-                writer.write(latency+"\n");
-                writer.close();
+                ProducerKafka.produce(producer,latency+"\n","query3latencyind");
+                producer.close();
                 break;
+
                 default:
                     break;
         }

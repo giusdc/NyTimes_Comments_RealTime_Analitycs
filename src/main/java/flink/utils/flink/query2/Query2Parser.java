@@ -6,10 +6,7 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Windowed;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
@@ -49,7 +46,7 @@ public class Query2Parser {
     }
 
 
-    public static Tuple4<String,String,Integer,Long> parseMetrics(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long> tuple) {
+    public static Tuple4<String,String,Integer,Instant> parseMetrics(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant> tuple) {
         LocalDateTime triggerTime =
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(tuple.f5*1000),
                         ZoneOffset.UTC.normalized());
@@ -58,8 +55,8 @@ public class Query2Parser {
         return new Tuple4<>(key,tuple.f4,1,tuple.f15);
     }
 
-    public static Tuple2<String,Integer> removeCommentTypeMetrics(Tuple4<String, String, Integer, Long> x) throws IOException {
-        LatencyTracker.computeLatency(x.f3,System.nanoTime(),2);
+    public static Tuple2<String,Integer> removeCommentTypeMetrics(Tuple4<String, String, Integer, Instant> x) throws IOException {
+        LatencyTracker.computeLatency(x.f3,Instant.now(Clock.systemUTC()),2);
         return new Tuple2<>(x.f0,x.f2);
     }
 }

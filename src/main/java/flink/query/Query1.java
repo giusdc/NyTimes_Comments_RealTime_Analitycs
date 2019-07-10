@@ -10,6 +10,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
+import java.time.Instant;
 
 
 public class Query1 {
@@ -59,12 +60,12 @@ public class Query1 {
                 .writeAsText("rankweekly", FileSystem.WriteMode.NO_OVERWRITE);
     }
 
-    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String redisAddress) {
+    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant>> stream, String redisAddress) {
 
         //Hour statistics
         DataStream<Tuple2<String, Integer>> rank1h = stream
                 .filter(x->x.f0!=-1)
-                .map(x -> Query1Parser.parseMetrics(x))
+                .map(Query1Parser::parseMetrics)
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(1)))

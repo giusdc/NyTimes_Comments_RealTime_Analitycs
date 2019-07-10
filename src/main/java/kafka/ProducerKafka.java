@@ -10,8 +10,8 @@ import java.util.Properties;
 public class ProducerKafka {
 
 
-    public static void produce(Producer<String, String> producer, String line) throws IOException {
-        producer.send(new ProducerRecord<String, String>("comments", line+"\n"));
+    public static void produce(Producer<String, String> producer, String line,String topic) throws IOException {
+        producer.send(new ProducerRecord<String, String>(topic, line+"\n"));
     }
 
 

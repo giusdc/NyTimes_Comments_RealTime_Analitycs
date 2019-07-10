@@ -4,7 +4,9 @@ import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple6;
 
-public class Query3IndirectAggregateMetrics implements AggregateFunction<Tuple6<Long, String,String,Long,Long,Long>, Tuple2<Long, Float>, Tuple2<Long, Float>> {
+import java.time.Instant;
+
+public class Query3IndirectAggregateMetrics implements AggregateFunction<Tuple6<Long, String,String,Long,Long, Instant>, Tuple2<Long, Float>, Tuple2<Long, Float>> {
 
     private float value=0;
     @Override
@@ -13,7 +15,7 @@ public class Query3IndirectAggregateMetrics implements AggregateFunction<Tuple6<
     }
 
     @Override
-    public Tuple2<Long, Float> add(Tuple6<Long, String, String, Long,Long,Long> tuple5, Tuple2<Long, Float> agg) {
+    public Tuple2<Long, Float> add(Tuple6<Long, String, String, Long,Long,Instant> tuple5, Tuple2<Long, Float> agg) {
 
         if(tuple5.f1.equals("comment")) {
             value = 0;

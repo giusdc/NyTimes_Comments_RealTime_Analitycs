@@ -6,6 +6,7 @@ import org.apache.flink.api.java.tuple.*;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public class Query3Parser {
     public  synchronized static Tuple6<Long, String,String,Long,Long,Integer> parse(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> x, String redisAddress) {
@@ -33,12 +34,12 @@ public class Query3Parser {
 
     }
 
-    public static Tuple7<Long, String,String,Long,Long,Integer,Long> parseMetrics(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long> x, String redisAddress) throws IOException {
+    public static Tuple7<Long, String,String,Long,Long,Integer,Instant> parseMetrics(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant> x, String redisAddress) throws IOException {
         Jedis jedis=new Jedis(redisAddress);
         //Delete a tuple after two weeks
         jedis.setex(String.valueOf(x.f3),2679/*31 giorni*/,String.valueOf(x.f13)+"_"+x.f8);
         jedis.close();
-        LatencyTracker.computeLatency(x.f15,System.nanoTime(),3);
-        return new Tuple7<Long,String, String, Long,Long,Integer,Long>(x.f13,x.f4,x.f7,x.f10,x.f8,x.f6,x.f15);
+        LatencyTracker.computeLatency(x.f15,Instant.now(),3);
+        return new Tuple7<>(x.f13,x.f4,x.f7,x.f10,x.f8,x.f6,x.f15);
     }
 }

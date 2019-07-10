@@ -35,21 +35,21 @@ public class MainMetrics {
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         //Set Kafka properties
         Properties properties= KafkaProperties.getProperties(kafkaAddress);
-        FlinkKafkaConsumerBase<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant>> kafkasource=new FlinkKafkaConsumer011<>("comments",new TopicDeserializationMetrics(), properties).setStartFromEarliest();
+        FlinkKafkaConsumerBase<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> kafkasource=new FlinkKafkaConsumer011<>("comments",new TopicDeserializationMetrics(), properties).setStartFromEarliest();
         //Set source
-        kafkasource.assignTimestampsAndWatermarks(new AscendingTimestampExtractor<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String,Instant>>() {
+        kafkasource.assignTimestampsAndWatermarks(new AscendingTimestampExtractor<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String,Long>>() {
             @Override
-            public long extractAscendingTimestamp(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String,Instant> tuple16) {
+            public long extractAscendingTimestamp(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String,Long> tuple16) {
                 return tuple16.f5*1000;
             }
         });
 
-        DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String,Instant>> stream =env.addSource(kafkasource);
+        DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String,Long>> stream =env.addSource(kafkasource);
 
 
-        //Query1.processMetrics(stream,redisAddress);
-        Query2.processMetrics(stream);
-        //Query3.processMetrics(stream,redisAddress);
+        Query1.processMetrics(stream,kafkaAddress,redisAddress);
+        Query2.processMetrics(stream,kafkaAddress);
+        Query3.processMetrics(stream,redisAddress,kafkaAddress);
         //Process Query
         env.execute();
 

@@ -9,7 +9,7 @@ import redis.clients.jedis.Jedis;
 
 import java.time.Instant;
 
-public class KeyMapperMetrics implements FlatMapFunction<Tuple7<Long, String, String, Long, Long, Integer, Instant>, Tuple6<Long, String, String, Long, Long,Instant>> {
+public class KeyMapperMetrics implements FlatMapFunction<Tuple7<Long, String, String, Long, Long, Integer, Long>, Tuple6<Long, String, String, Long, Long,Long>> {
 
     private String redisAddress;
     public KeyMapperMetrics(String redisAddress) {
@@ -18,7 +18,7 @@ public class KeyMapperMetrics implements FlatMapFunction<Tuple7<Long, String, St
 
 
     @Override
-    public synchronized void flatMap(Tuple7<Long, String, String, Long, Long, Integer,Instant> x, Collector<Tuple6<Long, String, String, Long, Long,Instant>> collector) throws Exception {
+    public synchronized void flatMap(Tuple7<Long, String, String, Long, Long, Integer,Long> x, Collector<Tuple6<Long, String, String, Long, Long,Long>> collector) throws Exception {
         if (x.f1.equals("comment"))
             collector.collect(new Tuple6<>(x.f0, x.f1, x.f2, x.f3, x.f4,x.f6));
         else {
@@ -26,7 +26,7 @@ public class KeyMapperMetrics implements FlatMapFunction<Tuple7<Long, String, St
             if (x.f5 > 2) {
                 String userId = jedis.get(String.valueOf(x.f4));
                 if (userId == null)
-                    collector.collect(new Tuple6<Long, String, String, Long, Long,Instant>(null, x.f1, x.f2, x.f3, x.f0,x.f6));
+                    collector.collect(new Tuple6<Long, String, String, Long, Long,Long>(null, x.f1, x.f2, x.f3, x.f0,x.f6));
                 else {
                     String[] id = userId.split("_");
                     collector.collect(new Tuple6<>(Long.parseLong(id[0]), x.f1, x.f2, x.f3, x.f0,x.f6));

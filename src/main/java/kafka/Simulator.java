@@ -19,7 +19,7 @@ public class Simulator {
         File file = new File("data/" + path);
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line, next = "";
-        Producer<String, String> producer = ProducerKafka.setConfig();
+        Producer<String, String> producer = ProducerKafka.setConfig(args[0]);
         //to skip header
         reader.readLine();
         //Produce first line

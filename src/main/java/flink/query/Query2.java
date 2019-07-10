@@ -63,14 +63,14 @@ public class Query2 {
                 .writeAsText("commentmonthly");
     }
 
-    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant>> stream) {
+    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String kafkaAddress) {
         //Compute count each 2 hours
         DataStream<Tuple3<String, Integer, Long>> countHours = stream
                 .filter(x -> x.f0 != -1)
                 .map(Query2Parser::parseMetrics)
-                .returns(Types.TUPLE(Types.STRING, Types.STRING, Types.INT, Types.INSTANT))
+                .returns(Types.TUPLE(Types.STRING, Types.STRING, Types.INT, Types.LONG))
                 .filter(x -> x.f1.equals("comment"))
-                .map(Query2Parser::removeCommentTypeMetrics)
+                .map(x->Query2Parser.removeCommentTypeMetrics(x,kafkaAddress))
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(2)))

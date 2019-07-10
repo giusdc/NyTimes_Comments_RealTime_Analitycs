@@ -1,6 +1,8 @@
 package flink.query;
 
+import flink.metrics.LatencyTracker;
 import flink.utils.flink.query1.*;
+import flink.utils.other.NanoClock;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple16;
@@ -10,7 +12,9 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 
 
 public class Query1 {
@@ -60,12 +64,12 @@ public class Query1 {
                 .writeAsText("rankweekly", FileSystem.WriteMode.NO_OVERWRITE);
     }
 
-    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant>> stream, String redisAddress) {
+    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String kafkaAddress, String redisAddress) {
 
         //Hour statistics
         DataStream<Tuple2<String, Integer>> rank1h = stream
                 .filter(x->x.f0!=-1)
-                .map(Query1Parser::parseMetrics)
+                .map(x->Query1Parser.parseMetrics(x,kafkaAddress))
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(1)))
@@ -90,17 +94,17 @@ public class Query1 {
         rank1h
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(new Query1RankWindows("H",redisAddress))
-                .writeAsText("rankhourly", FileSystem.WriteMode.NO_OVERWRITE);
+                .writeAsText("rankhourly", FileSystem.WriteMode.OVERWRITE);
         rankDaily
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
                         new Query1RankWindows("D",redisAddress))
-                .writeAsText("rankdaily", FileSystem.WriteMode.NO_OVERWRITE);
+                .writeAsText("rankdaily", FileSystem.WriteMode.OVERWRITE);
         rankWeek
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
                         new Query1RankWindows("W",redisAddress))
-                .writeAsText("rankweekly", FileSystem.WriteMode.NO_OVERWRITE);
+                .writeAsText("rankweekly", FileSystem.WriteMode.OVERWRITE);
     }
 }
 

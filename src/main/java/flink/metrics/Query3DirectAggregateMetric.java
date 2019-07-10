@@ -6,7 +6,7 @@ import org.apache.flink.api.java.tuple.Tuple7;
 
 import java.time.Instant;
 
-public class Query3DirectAggregateMetric implements AggregateFunction<Tuple7<Long, String,String,Long,Long,Integer, Instant>, Tuple2<Long, Float>, Tuple2<Long, Float>> {
+public class Query3DirectAggregateMetric implements AggregateFunction<Tuple7<Long, String,String,Long,Long,Integer, Long>, Tuple2<Long, Float>, Tuple2<Long, Float>> {
     float value=0;
     @Override
     public Tuple2<Long, Float> createAccumulator() {
@@ -14,7 +14,7 @@ public class Query3DirectAggregateMetric implements AggregateFunction<Tuple7<Lon
     }
 
     @Override
-    public Tuple2<Long, Float> add(Tuple7<Long, String, String, Long, Long, Integer, Instant> tuple7, Tuple2<Long, Float> agg) {
+    public Tuple2<Long, Float> add(Tuple7<Long, String, String, Long, Long, Integer, Long> tuple7, Tuple2<Long, Float> agg) {
         if(tuple7.f1.equals("comment")) {
             value = tuple7.f3;
             if (tuple7.f2.equals("True"))

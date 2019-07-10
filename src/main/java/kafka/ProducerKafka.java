@@ -15,12 +15,13 @@ public class ProducerKafka {
     }
 
 
-    public static Producer<String, String> setConfig() {
+
+    public static Producer<String, String> setConfig(String kafkaAddress) {
         //Set properties
         Properties props = new Properties();
 
         //Assign localhost id
-        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", kafkaAddress+":9092");
 
         //Set acknowledgements for ProducerKafka requests.
         props.put("acks", "all");

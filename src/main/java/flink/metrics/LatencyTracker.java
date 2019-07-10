@@ -12,9 +12,10 @@ import java.time.Instant;
 
 public class LatencyTracker {
 
-    public static void computeLatency(Instant start, Instant end, int index) throws IOException {
-        Producer<String, String> producer = ProducerKafka.setConfig();
-        double latency= (double)(Duration.between(start, end).toNanos())/Math.pow(10,6);
+    public static void computeLatency(long start, long end, int index,String kafkaAddress) throws IOException {
+        Producer<String, String> producer = ProducerKafka.setConfig(kafkaAddress);
+        double latency = (end - start)/Math.pow(10,6);
+        System.out.println(latency);
 
 
         switch (index){

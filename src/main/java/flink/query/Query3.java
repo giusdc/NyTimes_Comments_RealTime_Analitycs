@@ -81,13 +81,13 @@ public class Query3 {
 
     }
 
-    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Instant>> stream, String redisAddress) {
+    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String redisAddress, String kafkaAddress) {
 
         //Mapper
-        DataStream<Tuple7<Long, String, String, Long, Long, Integer,Instant>> mapper = stream
+        DataStream<Tuple7<Long, String, String, Long, Long, Integer,Long>> mapper = stream
                 .filter(x->x.f0!=-1)
-                .map(x -> Query3Parser.parseMetrics(x,redisAddress))
-                .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG,Types.INT,Types.INSTANT));
+                .map(x -> Query3Parser.parseMetrics(x,redisAddress,kafkaAddress))
+                .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG,Types.INT,Types.LONG));
 
         //Daily direct comments'statistics
         DataStream<Tuple2<Long, Float>> dailyDirect = mapper
@@ -101,8 +101,8 @@ public class Query3 {
         //Daily indirect comments'statistics
         DataStream<Tuple2<Long, Float>> dailyIndirect = mapper
                 .flatMap(new KeyMapperMetrics(redisAddress))
-                .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG,Types.INSTANT))
-                .filter(new FilterMetrics())
+                .returns(Types.TUPLE(Types.LONG, Types.STRING, Types.STRING, Types.LONG, Types.LONG,Types.LONG))
+                .filter(new FilterMetrics(kafkaAddress))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.days(1)))
                 .aggregate(new Query3IndirectAggregateMetrics());

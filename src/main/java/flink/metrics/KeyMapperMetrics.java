@@ -7,7 +7,9 @@ import org.apache.flink.api.java.tuple.Tuple7;
 import org.apache.flink.util.Collector;
 import redis.clients.jedis.Jedis;
 
-public class KeyMapperMetrics implements FlatMapFunction<Tuple7<Long, String, String, Long, Long, Integer,Long>, Tuple6<Long, String, String, Long, Long,Long>> {
+import java.time.Instant;
+
+public class KeyMapperMetrics implements FlatMapFunction<Tuple7<Long, String, String, Long, Long, Integer, Long>, Tuple6<Long, String, String, Long, Long,Long>> {
 
     private String redisAddress;
     public KeyMapperMetrics(String redisAddress) {
@@ -27,19 +29,19 @@ public class KeyMapperMetrics implements FlatMapFunction<Tuple7<Long, String, St
                     collector.collect(new Tuple6<Long, String, String, Long, Long,Long>(null, x.f1, x.f2, x.f3, x.f0,x.f6));
                 else {
                     String[] id = userId.split("_");
-                    collector.collect(new Tuple6<Long, String, String, Long, Long,Long>(Long.parseLong(id[0]), x.f1, x.f2, x.f3, x.f0,x.f6));
+                    collector.collect(new Tuple6<>(Long.parseLong(id[0]), x.f1, x.f2, x.f3, x.f0,x.f6));
                     String id2 = jedis.get(id[1]);
                     if (id2 == null)
-                        collector.collect(new Tuple6<Long, String, String, Long, Long,Long>(null, x.f1, x.f2, x.f3, x.f0,x.f6));
+                        collector.collect(new Tuple6<>(null, x.f1, x.f2, x.f3, x.f0,x.f6));
                     else
-                        collector.collect(new Tuple6<Long, String, String, Long, Long,Long>(Long.parseLong(id2.split("_")[0]), x.f1, x.f2, x.f3, x.f0,x.f6));
+                        collector.collect(new Tuple6<>(Long.parseLong(id2.split("_")[0]), x.f1, x.f2, x.f3, x.f0,x.f6));
                 }
             } else {
                 String userId = jedis.get(String.valueOf(x.f4));
                 if (userId == null)
-                    collector.collect(new Tuple6<Long, String, String, Long, Long,Long>(null, x.f1, x.f2, x.f3, x.f0,x.f6));
+                    collector.collect(new Tuple6<>(null, x.f1, x.f2, x.f3, x.f0,x.f6));
                 else
-                    collector.collect(new Tuple6<Long, String, String, Long, Long,Long>(Long.parseLong(userId.split("_")[0]), x.f1, x.f2, x.f3, x.f0,x.f6));
+                    collector.collect(new Tuple6<>(Long.parseLong(userId.split("_")[0]), x.f1, x.f2, x.f3, x.f0,x.f6));
             }
         }
     }

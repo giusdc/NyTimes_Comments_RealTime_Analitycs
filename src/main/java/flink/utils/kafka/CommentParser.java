@@ -1,7 +1,13 @@
 package flink.utils.kafka;
 
+import flink.utils.other.NanoClock;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple16;
+
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 
 public class CommentParser {
     public static Tuple15<Long, String, Long, Long, String,
@@ -57,10 +63,12 @@ public class CommentParser {
     public static Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long> parseMetrics(String line) {
         String[] comment=line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
         if(checkLine(comment)){
-            long startTime=System.nanoTime();
-            return new Tuple16<>(Long.parseLong(comment[0]),comment[1],Long.parseLong(comment[2]),Long.parseLong(comment[3]),comment[4],Long.parseLong(comment[5]),Integer.parseInt(comment[6]),comment[7],(long) Long.parseLong(comment[8]),comment[9],Long.parseLong(comment[10]),comment[11],comment[12],Long.parseLong(comment[13]),comment[14],startTime);
+            Instant now = Instant.now(new NanoClock(ZoneId.systemDefault()));
+            long result = Duration.between(Instant.ofEpochMilli(0), now).toNanos();
+            //System.err.println(result);
+            return new Tuple16<>(Long.parseLong(comment[0]),comment[1],Long.parseLong(comment[2]),Long.parseLong(comment[3]),comment[4],Long.parseLong(comment[5]),Integer.parseInt(comment[6]),comment[7],(long) Long.parseLong(comment[8]),comment[9],Long.parseLong(comment[10]),comment[11],comment[12],Long.parseLong(comment[13]),comment[14],result);
         }
         else
-            return new Tuple16<>(-1L,null,-1L,-1L,null,-1L,-1,null,-1L,null,-1L,null,null,-1L,null,-1L);
+            return new Tuple16<>(-1L,null,-1L,-1L,null,-1L,-1,null,-1L,null,-1L,null,null,-1L,null,null);
     }
 }

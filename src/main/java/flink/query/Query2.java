@@ -9,6 +9,8 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
+import java.time.Instant;
+
 
 public class Query2 {
 
@@ -61,14 +63,14 @@ public class Query2 {
                 .writeAsText("commentmonthly");
     }
 
-    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream) {
+    public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String kafkaAddress) {
         //Compute count each 2 hours
         DataStream<Tuple3<String, Integer, Long>> countHours = stream
                 .filter(x -> x.f0 != -1)
-                .map(x -> Query2Parser.parseMetrics(x))
+                .map(Query2Parser::parseMetrics)
                 .returns(Types.TUPLE(Types.STRING, Types.STRING, Types.INT, Types.LONG))
                 .filter(x -> x.f1.equals("comment"))
-                .map(x -> Query2Parser.removeCommentTypeMetrics(x))
+                .map(x->Query2Parser.removeCommentTypeMetrics(x,kafkaAddress))
                 .returns(Types.TUPLE(Types.STRING, Types.INT))
                 .keyBy(0)
                 .window(TumblingEventTimeWindows.of(Time.hours(2)))

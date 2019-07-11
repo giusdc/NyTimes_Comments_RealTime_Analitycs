@@ -1,6 +1,7 @@
 package flink.utils.flink.query2;
 
 import flink.metrics.LatencyTracker;
+import flink.utils.other.NanoClock;
 import org.apache.flink.api.java.tuple.*;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Windowed;
@@ -53,8 +54,11 @@ public class Query2Parser {
         return new Tuple4<>(key,tuple.f4,1,tuple.f15);
     }
 
-    public static Tuple2<String,Integer> removeCommentTypeMetrics(Tuple4<String, String, Integer, Long> x) throws IOException {
-        LatencyTracker.computeLatency(x.f3,System.nanoTime(),2);
+    public static Tuple2<String,Integer> removeCommentTypeMetrics(Tuple4<String, String, Integer, Long> x, String kafkaddress) throws IOException {
+        Instant now = Instant.now(new NanoClock(ZoneId.systemDefault()));
+        long result = Duration.between(Instant.ofEpochMilli(0), now).toNanos();
+       // System.err.println(result);
+        LatencyTracker.computeLatency(x.f3,result,2,kafkaddress);
         return new Tuple2<>(x.f0,x.f2);
     }
 }

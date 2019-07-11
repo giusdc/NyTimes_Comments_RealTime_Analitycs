@@ -19,7 +19,7 @@ public class Simulator {
         File file = new File("data/" + path);
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line, next = "";
-        Producer<String, String> producer = ProducerKafka.setConfig();
+        Producer<String, String> producer = ProducerKafka.setConfig(args[0]);
         //to skip header
         reader.readLine();
         //Produce first line
@@ -30,7 +30,7 @@ public class Simulator {
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(passed_time),
                         ZoneOffset.UTC.normalized());
         System.out.println("date " + triggerTime + "\n");
-        ProducerKafka.produce(producer, line);
+        ProducerKafka.produce(producer, line,"comments");
         //Produce on Kafka
         while ((next = reader.readLine()) != null) {
             if (checkTime(next)){
@@ -45,7 +45,7 @@ public class Simulator {
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
                                 ZoneOffset.UTC.normalized());
                 System.out.println("date " + triggerTime2 + "\n");
-                ProducerKafka.produce(producer, next);
+                ProducerKafka.produce(producer, line,"comments");
             }
             line = next;
         }

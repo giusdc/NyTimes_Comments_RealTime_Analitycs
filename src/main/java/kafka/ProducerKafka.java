@@ -10,17 +10,18 @@ import java.util.Properties;
 public class ProducerKafka {
 
 
-    public static void produce(Producer<String, String> producer, String line) throws IOException {
-        producer.send(new ProducerRecord<String, String>("comments", line+"\n"));
+    public static void produce(Producer<String, String> producer, String line,String topic) throws IOException {
+        producer.send(new ProducerRecord<String, String>(topic, line+"\n"));
     }
 
 
-    public static Producer<String, String> setConfig() {
+
+    public static Producer<String, String> setConfig(String kafkaAddress) {
         //Set properties
         Properties props = new Properties();
 
         //Assign localhost id
-        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", kafkaAddress+":9092");
 
         //Set acknowledgements for ProducerKafka requests.
         props.put("acks", "all");

@@ -4,7 +4,9 @@ import org.apache.flink.api.common.functions.AggregateFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple7;
 
-public class Query3DirectAggregateMetric implements AggregateFunction<Tuple7<Long, String,String,Long,Long,Integer,Long>, Tuple2<Long, Float>, Tuple2<Long, Float>> {
+import java.time.Instant;
+
+public class Query3DirectAggregateMetric implements AggregateFunction<Tuple7<Long, String,String,Long,Long,Integer, Long>, Tuple2<Long, Float>, Tuple2<Long, Float>> {
     float value=0;
     @Override
     public Tuple2<Long, Float> createAccumulator() {

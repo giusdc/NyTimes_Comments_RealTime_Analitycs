@@ -1,40 +1,45 @@
 package flink.metrics;
 
 import flink.utils.other.FileUtils;
-import org.apache.commons.math3.genetics.FixedElapsedTime;
+import kafka.ProducerKafka;
+import org.apache.kafka.clients.producer.Producer;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 
 public class LatencyTracker {
 
-    public static void computeLatency(long startTime,long endTime,int index) throws IOException {
+    public static void computeLatency(long start, long end, int index,String kafkaAddress) throws IOException {
+        Producer<String, String> producer = ProducerKafka.setConfig(kafkaAddress);
+        double latency = (end - start)/Math.pow(10,6);
+        System.out.println(latency);
 
-        double latency=(double) (endTime-startTime)/100000;
-        BufferedWriter writer;
+
         switch (index){
             case 1:
-                writer = new BufferedWriter(new FileWriter("query1latency.txt",true));
-                writer.write(latency+"\n");
-                writer.close();
+                ProducerKafka.produce(producer,latency+"\n","query1latency");
+                producer.close();
                 break;
 
+
             case 2:
-                writer = new BufferedWriter(new FileWriter("query2latency.txt",true));
-                writer.write(latency+"\n");
-                writer.close();
+                ProducerKafka.produce(producer,latency+"\n","query2latency");
+                producer.close();
                 break;
+
             case 3:
-                writer = new BufferedWriter(new FileWriter("query3latencydirect.txt",true));
-                writer.write(latency+"\n");
-                writer.close();
+                ProducerKafka.produce(producer,latency+"\n","query3latencydir");
+                producer.close();
+
                 break;
             case 4:
-                writer = new BufferedWriter(new FileWriter("query3latencyindirect.txt",true));
-                writer.write(latency+"\n");
-                writer.close();
+                ProducerKafka.produce(producer,latency+"\n","query3latencyind");
+                producer.close();
                 break;
+
                 default:
                     break;
         }

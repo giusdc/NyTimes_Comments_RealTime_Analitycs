@@ -48,8 +48,8 @@ public class MainMetrics {
 
 
         Query1.processMetrics(stream,kafkaAddress,redisAddress);
-        Query2.processMetrics(stream,kafkaAddress);
-        Query3.processMetrics(stream,redisAddress,kafkaAddress);
+        //Query2.processMetrics(stream,kafkaAddress);
+        //Query3.processMetrics(stream,redisAddress,kafkaAddress);
         //Process Query
         env.execute();
 

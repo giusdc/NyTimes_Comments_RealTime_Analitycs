@@ -19,27 +19,53 @@ public class CpuLoad {
 
     public static void main(String[] args) throws Exception {
 
-        BufferedWriter cpuWriter;
+        BufferedWriter cpuWriter1;
+        BufferedWriter cpuWriter2;
+        BufferedWriter cpuWriter3;
+        BufferedWriter thrFlinkWriter;
+        BufferedWriter thrSourceFlinkWriter;
         BufferedWriter latencyWriter;
         BufferedWriter thrWriter;
+        long start = System.currentTimeMillis();
 
-        for (int i = 0; i <60; i++) {
+        for (;;) {
 
-            /*cpuWriter= new BufferedWriter(
-                    new FileWriter("cpu.txt",true));*/
+            cpuWriter1= new BufferedWriter(
+                    new FileWriter("cpu1.txt",true));
+            cpuWriter2= new BufferedWriter(
+                    new FileWriter("cpu2.txt",true));
+            cpuWriter3= new BufferedWriter(
+                    new FileWriter("cpu3.txt",true));
+            thrFlinkWriter= new BufferedWriter(
+                    new FileWriter("thrMapFlink.txt",true));
+            thrSourceFlinkWriter= new BufferedWriter(
+                    new FileWriter("thrSourceFlink.txt",true));
+            /*
             latencyWriter= new BufferedWriter(
                     new FileWriter("latencykafka.txt",true));
             thrWriter= new BufferedWriter(
-                    new FileWriter("throuhputkafka.txt",true));
-            TimeUnit.SECONDS.sleep(10);
-            //cpuWriter.write(sendGet(args[0])+"\n");
-            latencyWriter.write(sendGet(args[1],1));
-            thrWriter.write(sendGet(args[1],2));
+                    new FileWriter("throuhputkafka.txt",true));*/
+            thrFlinkWriter.write(sendGet(args[0],3));
+            thrSourceFlinkWriter.write(sendGet(args[1],3));
+            cpuWriter1.write(sendGet(args[2],0));
+            cpuWriter2.write(sendGet(args[3],0));
+            cpuWriter3.write(sendGet(args[4],0));
 
-           // cpuWriter.close();
-            latencyWriter.close();
-            thrWriter.close();
+            /*
+            latencyWriter.write(sendGet(args[1],1));
+            thrWriter.write(sendGet(args[1],2));*/
+
+            cpuWriter1.close();
+            cpuWriter2.close();
+            cpuWriter3.close();
+            thrFlinkWriter.close();
+            thrSourceFlinkWriter.close();
+            if(System.currentTimeMillis()-start>=600000)
+                break;
+            //latencyWriter.close();
+            //thrWriter.close();
             System.out.print(".");
+            TimeUnit.SECONDS.sleep(5);
         }
 
     }
@@ -89,6 +115,10 @@ public class CpuLoad {
                 catch (Exception e){
                     return "";
                 }
+            case 3:
+                JsonArray jsonArr = (JsonArray) new JsonParser().parse(response.toString());
+                JsonObject result = jsonArr.get(0).getAsJsonObject();
+                return String.valueOf(result.get("avg")+"\n");
                 default:
                     return "";
 

@@ -27,6 +27,7 @@ public class CpuLoad {
         BufferedWriter latencyWriter;
         BufferedWriter thrWriter;
         long start = System.currentTimeMillis();
+        System.err.println(start);
 
         for (;;) {
 
@@ -60,12 +61,14 @@ public class CpuLoad {
             cpuWriter3.close();
             thrFlinkWriter.close();
             thrSourceFlinkWriter.close();
+            System.out.println("END"+System.currentTimeMillis());
+            /*
             if(System.currentTimeMillis()-start>=600000)
-                break;
+                break;*/
             //latencyWriter.close();
             //thrWriter.close();
             System.out.print(".");
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.SECONDS.sleep(1);
         }
 
     }

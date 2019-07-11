@@ -86,7 +86,7 @@
               </filters>
               <transformers>
                 <transformer>
-                  <mainClass>flink.metrics.MainMetrics</mainClass>
+                  <mainClass>kafkastream.KafkaStreamMain</mainClass>
                 </transformer>
                 <transformer>
                   <resource>reference.conf</resource>

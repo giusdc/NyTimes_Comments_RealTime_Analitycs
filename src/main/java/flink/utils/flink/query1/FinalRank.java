@@ -35,11 +35,14 @@ public class FinalRank {
         String triggerTime =
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(finalRank[0].split("_")[2])),
                         ZoneOffset.UTC.normalized()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
-        result += triggerTime + "[";
+        result += triggerTime + " [";
         for (int i = 0; i < finalRank.length; i++) {
             result += "(" + finalRank[i].split("_")[0] + "," + finalRank[i].split("_")[1] + "),";
-            if (i == position - 1)
+            if (i == position - 1){
+                result += "(" + finalRank[i].split("_")[0] + "," + finalRank[i].split("_")[1] + ")";
                 break;
+
+            }
         }
         result+="]";
         jedis.del(this.key);

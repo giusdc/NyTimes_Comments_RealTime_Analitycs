@@ -6,6 +6,7 @@ import org.apache.flink.api.java.tuple.*;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public class Query3Parser {
     public  synchronized static Tuple6<Long, String,String,Long,Long,Integer> parse(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> x, String redisAddress) {

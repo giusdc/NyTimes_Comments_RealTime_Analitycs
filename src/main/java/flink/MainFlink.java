@@ -47,8 +47,8 @@ public class MainFlink {
 
         //Queries processing
         Query1.process(stream,redisAddress);
-        Query2.process(stream);
-        Query3.process(stream,redisAddress);
+        //Query2.process(stream);
+        //Query3.process(stream,redisAddress);
 
         //Execute queries
         env.execute();

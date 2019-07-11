@@ -1,6 +1,7 @@
 package flink.metrics;
 
 import flink.utils.other.FileUtils;
+import org.apache.commons.math3.genetics.FixedElapsedTime;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,6 +10,7 @@ import java.io.IOException;
 public class LatencyTracker {
 
     public static void computeLatency(long startTime,long endTime,int index) throws IOException {
+
         double latency=(double) (endTime-startTime)/100000;
         BufferedWriter writer;
         switch (index){

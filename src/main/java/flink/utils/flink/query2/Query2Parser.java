@@ -6,10 +6,7 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Windowed;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
@@ -18,9 +15,7 @@ public class Query2Parser {
 
 
     public static Tuple3<String,String,Integer> parse(Tuple15<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String> tuple) {
-        LocalDateTime triggerTime =
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(tuple.f5*1000),
-                        ZoneOffset.UTC.normalized());
+        LocalDateTime triggerTime = Instant.ofEpochMilli(tuple.f5*1000).atZone(ZoneId.of("UTC")).toLocalDateTime();
         //Get the key based on the hours of the tuple
         String key=getKey(triggerTime.getHour());
         return new Tuple3<>(key,tuple.f4,1);

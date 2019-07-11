@@ -6,6 +6,7 @@ import org.apache.flink.api.java.tuple.Tuple16;
 import org.apache.flink.api.java.tuple.Tuple2;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public class Query1Parser {
     //Get only the articleID and 1 as field

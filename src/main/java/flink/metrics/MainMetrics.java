@@ -48,7 +48,7 @@ public class MainMetrics {
 
         Query1.processMetrics(stream,redisAddress);
         //Query2.processMetrics(stream);
-       // Query3.processMetrics(stream,redisAddress);
+        Query3.processMetrics(stream,redisAddress);
         //Process Query
         env.execute();
 

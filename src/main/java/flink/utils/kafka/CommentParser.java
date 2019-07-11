@@ -69,6 +69,6 @@ public class CommentParser {
             return new Tuple16<>(Long.parseLong(comment[0]),comment[1],Long.parseLong(comment[2]),Long.parseLong(comment[3]),comment[4],Long.parseLong(comment[5]),Integer.parseInt(comment[6]),comment[7],(long) Long.parseLong(comment[8]),comment[9],Long.parseLong(comment[10]),comment[11],comment[12],Long.parseLong(comment[13]),comment[14],result);
         }
         else
-            return new Tuple16<>(-1L,null,-1L,-1L,null,-1L,-1,null,-1L,null,-1L,null,null,-1L,null,null);
+            return new Tuple16<>(-1L,null,-1L,-1L,null,-1L,-1,null,-1L,null,-1L,null,null,-1L,null,-1L);
     }
 }

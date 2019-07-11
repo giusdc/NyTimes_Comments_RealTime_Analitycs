@@ -44,12 +44,12 @@ public class MainMetrics {
             }
         });
 
-        DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String,Long>> stream =env.addSource(kafkasource);
+        DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String,Long>> stream =env.addSource(kafkasource).setParallelism(2);
 
 
-        //Query1.processMetrics(stream,kafkaAddress,redisAddress);
+        Query1.processMetrics(stream,kafkaAddress,redisAddress);
         //Query2.processMetrics(stream,kafkaAddress);
-        Query3.processMetrics(stream,redisAddress,kafkaAddress);
+        //Query3.processMetrics(stream,redisAddress,kafkaAddress);
         //Process Query
         env.execute();
 

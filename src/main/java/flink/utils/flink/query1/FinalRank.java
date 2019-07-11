@@ -39,7 +39,6 @@ public class FinalRank {
         for (int i = 0; i < finalRank.length; i++) {
             result += "(" + finalRank[i].split("_")[0] + "," + finalRank[i].split("_")[1] + "),";
             if (i == position - 1){
-                result += "(" + finalRank[i].split("_")[0] + "," + finalRank[i].split("_")[1] + ")";
                 break;
 
             }

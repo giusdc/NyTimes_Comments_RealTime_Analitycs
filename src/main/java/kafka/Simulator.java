@@ -34,6 +34,7 @@ public class Simulator {
         //Produce on Kafka
         while ((next = reader.readLine()) != null) {
             if (checkTime(next)){
+
                 long firstApproveDate = Long.parseLong(line.split(",", -1)[5]);
                 long nextApproveDate = Long.parseLong(next.split(",", -1)[5]);
                 long time = (nextApproveDate - firstApproveDate);
@@ -45,7 +46,7 @@ public class Simulator {
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
                                 ZoneOffset.UTC.normalized());
                 System.out.println("date " + triggerTime2 + "\n");
-                ProducerKafka.produce(producer, line,"comments");
+                ProducerKafka.produce(producer, next,"comments");
             }
             line = next;
         }

@@ -38,9 +38,13 @@ public class Query2ParserKafkaStream {
 
     //Add the window's start
     public static KeyValue<String,String> getKey(Windowed<String> x, Long y) {
-        String key =
+
+        LocalDateTime triggerTime =
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(x.window().start()),
-                        ZoneOffset.UTC.normalized()).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+                        ZoneOffset.UTC.normalized());
+        LocalDateTime start = triggerTime.withHour(0).withMinute(0).withSecond(0).withNano(0);
+        String key =
+                start.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
         return new KeyValue<>(key,x.key()+":"+y);
     }
 

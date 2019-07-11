@@ -34,18 +34,13 @@ public class Query2Result implements AllWindowFunction<Tuple3<String, Integer,Lo
         String[] key={"count_h00","count_h02","count_h04","count_h06","count_h08","count_h10","count_h12","count_h14","count_h16","count_h18","count_h20","count_h22"};
         //Check if there is a value for the hourly slot, in this case write the value otherwise write 0
 
-        /*
+
         for (String s : key) {
             result+=hashMapValues.getOrDefault(s, 0) + ",";
         }
-         */
 
-        for (int i = 0; i <key.length ; i++) {
-            result+=hashMapValues.getOrDefault(key[i], 0) + ",";
-            if(i==key.length-1)
-                result+=hashMapValues.getOrDefault(key[i], 0) + "]";
 
-        }
+
         collector.collect(result);
     }
 }

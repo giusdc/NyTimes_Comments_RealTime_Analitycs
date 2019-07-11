@@ -5,6 +5,7 @@ import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple15;
 import org.apache.flink.api.java.tuple.Tuple16;
 import org.apache.flink.api.java.tuple.Tuple3;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
@@ -50,17 +51,17 @@ public class Query2 {
         countHours
                 .windowAll(TumblingEventTimeWindows.of(Time.days(1)))
                 .apply(new Query2Result())
-                .writeAsText("commentdaily");
+                .writeAsText("commentdaily", FileSystem.WriteMode.OVERWRITE);
 
         countWeekly
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(new Query2Result())
-                .writeAsText("commentweekly");
+                .writeAsText("commentweekly",FileSystem.WriteMode.OVERWRITE);
 
         countMonthly
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(new Query2Result())
-                .writeAsText("commentmonthly");
+                .writeAsText("commentmonthly",FileSystem.WriteMode.OVERWRITE);
     }
 
     public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String kafkaAddress) {
@@ -97,16 +98,16 @@ public class Query2 {
         countHours
                 .windowAll(TumblingEventTimeWindows.of(Time.days(1)))
                 .apply(new Query2Result())
-                .writeAsText("commentdaily");
+                .writeAsText("commentdaily",FileSystem.WriteMode.OVERWRITE);
 
         countWeekly
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(new Query2Result())
-                .writeAsText("commentweekly");
+                .writeAsText("commentweekly",FileSystem.WriteMode.OVERWRITE);
 
         countMonthly
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(new Query2Result())
-                .writeAsText("commentmonthly");
+                .writeAsText("commentmonthly",FileSystem.WriteMode.OVERWRITE);
     }
 }

@@ -32,6 +32,8 @@ public class KafkaProperties {
         props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+        props.put(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG,"DEBUG");
+        props.put(StreamsConfig.METRICS_SAMPLE_WINDOW_MS_CONFIG,"2000");
 
         return props;
     }

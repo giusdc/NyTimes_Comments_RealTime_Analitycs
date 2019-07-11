@@ -45,6 +45,16 @@ public class KafkaStreamMain {
         KStream<String, Long> commentsDaily = windowcommentsDaily
                 .selectKey((x, y) -> x.key());
 
+
+        //Produce daily result
+
+        windowcommentsDaily
+                .map(Query2ParserKafkaStream::getKey)
+                .groupByKey(Grouped.with(Serdes.String(), Serdes.String()))
+                .aggregate(new Query2Inizializer(), new Query2Aggregator())
+                .toStream()
+                .map(Query2ParserKafkaStream::getLongArray)
+                .print(Printed.toFile("daily"));
         //Week
        commentsDaily
                 .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
@@ -75,15 +85,7 @@ public class KafkaStreamMain {
                 .print(Printed.toFile("month"));
 
 
-        //Produce daily result
 
-         windowcommentsDaily
-                .map(Query2ParserKafkaStream::getKey)
-                .groupByKey(Grouped.with(Serdes.String(), Serdes.String()))
-                 .aggregate(new Query2Inizializer(), new Query2Aggregator())
-                .toStream()
-                 .map(Query2ParserKafkaStream::getLongArray)
-                 .print(Printed.toFile("daily"));
 
 
         //Start Kafka Streams

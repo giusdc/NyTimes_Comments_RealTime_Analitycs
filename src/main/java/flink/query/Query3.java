@@ -9,6 +9,7 @@ import flink.utils.other.MonthlyWindowTum;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.*;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
@@ -71,13 +72,13 @@ public class Query3 {
         //Get results
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
                 new Query3RankWindows("D",redisAddress))
-                .writeAsText("popdaily");
+                .writeAsText("popdaily", FileSystem.WriteMode.OVERWRITE);
         rankWeekly.timeWindowAll(Time.milliseconds(1)).apply(
                 new Query3RankWindows("W",redisAddress))
-                .writeAsText("popweekly");
+                .writeAsText("popweekly",FileSystem.WriteMode.OVERWRITE);
         rankMonthly.timeWindowAll(Time.milliseconds(1)).apply(
                 new Query3RankWindows("M",redisAddress))
-                .writeAsText("popmonthly");
+                .writeAsText("popmonthly",FileSystem.WriteMode.OVERWRITE);
 
     }
 
@@ -140,13 +141,13 @@ public class Query3 {
         //Get results
         rankDaily.timeWindowAll(Time.milliseconds(1)).apply(
                 new Query3RankWindows("D",redisAddress))
-                .writeAsText("popdaily");
+                .writeAsText("popdaily",FileSystem.WriteMode.OVERWRITE);
         rankWeekly.timeWindowAll(Time.milliseconds(1)).apply(
                 new Query3RankWindows("W",redisAddress))
-                .writeAsText("popweekly");
+                .writeAsText("popweekly",FileSystem.WriteMode.OVERWRITE);
         rankMonthly.timeWindowAll(Time.milliseconds(1)).apply(
                 new Query3RankWindows("M",redisAddress))
-                .writeAsText("popmonthly");
+                .writeAsText("popmonthly",FileSystem.WriteMode.OVERWRITE);
 
 
 

@@ -50,18 +50,18 @@ public class Query1 {
                .timeWindowAll(Time.milliseconds(1))
                .apply(
                 new Query1RankWindows("H",redisAddress))
-                .writeAsText("rankhourly", FileSystem.WriteMode.NO_OVERWRITE);
+                .writeAsText("rankhourly", FileSystem.WriteMode.OVERWRITE);
 
        rankDaily
                .timeWindowAll(Time.milliseconds(1))
                .apply(
                 new Query1RankWindows("D",redisAddress))
-               .writeAsText("rankdaily", FileSystem.WriteMode.NO_OVERWRITE);
+               .writeAsText("rankdaily", FileSystem.WriteMode.OVERWRITE);
         rankWeek
                 .timeWindowAll(Time.milliseconds(1))
                 .apply(
                 new Query1RankWindows("W",redisAddress))
-                .writeAsText("rankweekly", FileSystem.WriteMode.NO_OVERWRITE);
+                .writeAsText("rankweekly", FileSystem.WriteMode.OVERWRITE);
     }
 
     public static void processMetrics(DataStream<Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long>> stream, String kafkaAddress, String redisAddress) {

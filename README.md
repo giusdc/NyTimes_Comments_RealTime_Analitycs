@@ -1,6 +1,6 @@
-#Progetto per il corso Sistemi e Architetture per Big Data - A.A. 2018/19
+##Progetto per il corso Sistemi e Architetture per Big Data - A.A. 2018/19
 ## Progetto 2: Analisi dei commenti di articoli pubblicati sul New York Times con Storm/Flink
-###(Di Cosmo - Nedia)
+#####(Di Cosmo - Nedia)
 
 Lo scopo del progetto è rispondere ad alcune query riguardanti un dataset relativo ai commenti di articoli `
 pubblicati sul New York Times, utilizzando il framework Apache Flink e per la query 2 la libreria client Apache Kafka Streams.

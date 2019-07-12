@@ -26,6 +26,8 @@ public class CpuLoad {
         BufferedWriter thrSourceFlinkWriter;
         BufferedWriter latencyWriter;
         BufferedWriter thrWriter;
+        BufferedWriter sourceWriter;
+        BufferedWriter cpuKafka;
         long start = System.currentTimeMillis();
         System.err.println(start);
 
@@ -38,7 +40,7 @@ public class CpuLoad {
             cpuWriter3= new BufferedWriter(
                     new FileWriter("cpu3.txt",true));*/
             /*thrFlinkWriter= new BufferedWriter(
-                    new FileWriter("thrMapFlink.txt",true));
+                    new FileWriter("thrRedFlinkind.txt",true));
             /*thrSourceFlinkWriter= new BufferedWriter(
                     new FileWriter("thrSourceFlink.txt",true));*/
 
@@ -46,6 +48,10 @@ public class CpuLoad {
                     new FileWriter("latencykafka.txt",true));
             thrWriter= new BufferedWriter(
                     new FileWriter("throuhputkafka.txt",true));
+            sourceWriter= new BufferedWriter(
+                    new FileWriter("sourcekafka.txt",true));
+            cpuKafka = new BufferedWriter(
+                    new FileWriter("cpukafka.txt", true));
             //thrFlinkWriter.write(sendGet(args[0],3));
             //thrSourceFlinkWriter.write(sendGet(args[1],3));
             //cpuWriter1.write(sendGet(args[2],0));
@@ -53,8 +59,10 @@ public class CpuLoad {
             //cpuWriter3.write(sendGet(args[4],0));
 
 
-            latencyWriter.write(sendGet(args[1],1));
-            thrWriter.write(sendGet(args[1],2));
+            latencyWriter.write(sendGet(args[0],1));
+            thrWriter.write(sendGet(args[0],2));
+            sourceWriter.write(sendGet(args[1],4));
+            cpuKafka.write(sendGet(args[2],5));
 
             //cpuWriter1.close();
             //cpuWriter2.close();
@@ -63,7 +71,9 @@ public class CpuLoad {
             //thrSourceFlinkWriter.close();
             System.out.println("END"+System.currentTimeMillis());
             latencyWriter.close();
-            //thrWriter.close();
+            thrWriter.close();
+            sourceWriter.close();
+            cpuKafka.close();
             System.out.print(".");
             TimeUnit.SECONDS.sleep(5);
         }
@@ -121,6 +131,27 @@ public class CpuLoad {
                 return String.valueOf(result.get("avg")+"\n");
                 default:
                     return "";
+            case 4:
+
+                JsonObject thrJson4 = (JsonObject) new JsonParser().parse(response.toString());
+                JsonObject resi = (JsonObject)thrJson4.get("value").getAsJsonObject();
+
+                try {
+                   // System.out.println(thrJsonObj5.get("mbean"));
+                   return String.valueOf(resi.get("forward-rate")+"\n");
+                }
+                catch (Exception e){
+                    return "";
+                }
+            case 5:
+
+                try {
+                    // System.out.println(thrJsonObj5.get("mbean"));
+                    return String.valueOf(response.toString()+"\n");
+                }
+                catch (Exception e){
+                    return "";
+                }
 
         }
 

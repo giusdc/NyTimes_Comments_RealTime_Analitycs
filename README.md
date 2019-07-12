@@ -1,6 +1,6 @@
-##Progetto per il corso Sistemi e Architetture per Big Data - A.A. 2018/19
+### Progetto per il corso Sistemi e Architetture per Big Data - A.A. 2018/19
 ## Progetto 2: Analisi dei commenti di articoli pubblicati sul New York Times con Storm/Flink
-###(Di Cosmo Giuseppe - Nedia Salvatore)
+### (Di Cosmo Giuseppe - Nedia Salvatore)
 
 Lo scopo del progetto è rispondere ad alcune query riguardanti un dataset relativo ai commenti di articoli
 pubblicati sul *New York Times*, utilizzando il framework Apache Flink e per la query 2 la libreria client Apache Kafka Streams.
@@ -24,7 +24,7 @@ A questo punto bisognerà accedere alla console di aws e andando su Servizi->ec2
 Infine basterà eseguire il comando ```java -jar Simulator.jar localhost``` sull'istanza di kafka che inizierà la simulazione dello stream di tuple.
 
 * Per eseguire la query 2 dell'applicativo tramite la libreria client Apache Kafka Streams in locale è necessario:<br>
- Anche in questo caso avere kafka,zookeeper e flink installati all'interno della propria macchina 
+ Anche in questo caso avere kafka e zookeeper installati all'interno della propria macchina 
     * Attivare kafka e zookeper
     * Far partire prima il jar KafkaStreams.jar con il comando ```java -jar KafkaStream.jar```
     * Infine far partire il jar del simulatore tramite il comando ```java -jar Simulator.jar localhost```

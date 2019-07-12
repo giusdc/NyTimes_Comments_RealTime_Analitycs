@@ -13,7 +13,7 @@ dall’1 gennaio 2018 al 18 aprile 2018.
     
 * E' possibile inoltre eseguire lapplicativo non in modalità nodo standalone con Apache Flink, ma utilizzando il servizio Cloud per Hadoop Amazon EMR.
 In questo caso è necessario innanzitutto avere un account Amazon aws con relative ID chiave di accesso e chiave di accesso segreta, che dovranno essere sostittuire all'interno degli script python scriptAWS e launchAWSCluster. Creare una coppia di chiavi tramite la console Amazon EC2, da specificare anch'essa nello script scriptAWS.
-Una volta eseguite queste opreazioni basterà lanciare prima lo script 'scriptAWS' (eseguendo il comando:``` python scriptAWS```) e successivamente 'launchAWSCluster' (eseguendo il comando: ```pyhton launchAWSCluster```).
+Una volta eseguite queste operazioni basterà lanciare prima lo script 'scriptAWS' (eseguendo il comando:``` python scriptAWS```) e successivamente 'launchAWSCluster' (eseguendo il comando: ```pyhton launchAWSCluster```).
 A questo punto bisognerà:
   * Accedere alla console di aws e andando su Servizi->ec2->running instances, individuare l'istanza di kafka presente in 'eu-central-1c' e inviare, tramite il comando: ```scp -i keypath datasetPath/jarsPath ubuntu@indirizzoIPkafka:```, il dataset  e il jar simulator.jar
    * Connettersi all'istanza di kafka tramite il comando: ```ssh -i keyPath address```.

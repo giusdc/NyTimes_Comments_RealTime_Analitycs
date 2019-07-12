@@ -21,7 +21,6 @@ public class FilterMetrics implements FilterFunction<Tuple6<Long, String, String
         if(tuple6.f0!=null){
             Instant now = Instant.now(new NanoClock(ZoneId.systemDefault()));
             long result = Duration.between(Instant.ofEpochMilli(0), now).toNanos();
-            //System.err.println(result);
             LatencyTracker.computeLatency(tuple6.f5,result,4,this.kafkaAddress);
             return true;
         }

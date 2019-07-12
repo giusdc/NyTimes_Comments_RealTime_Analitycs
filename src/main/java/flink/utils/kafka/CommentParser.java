@@ -24,7 +24,7 @@ public class CommentParser {
 
 
     private static boolean checkLine(String[] str) {
-
+        //check non valid value
         try {
             if (Long.parseLong(str[0]) < 1514764800)
                 return false;
@@ -65,7 +65,6 @@ public class CommentParser {
         if(checkLine(comment)){
             Instant now = Instant.now(new NanoClock(ZoneId.systemDefault()));
             long result = Duration.between(Instant.ofEpochMilli(0), now).toNanos();
-            //System.err.println(result);
             return new Tuple16<>(Long.parseLong(comment[0]),comment[1],Long.parseLong(comment[2]),Long.parseLong(comment[3]),comment[4],Long.parseLong(comment[5]),Integer.parseInt(comment[6]),comment[7],(long) Long.parseLong(comment[8]),comment[9],Long.parseLong(comment[10]),comment[11],comment[12],Long.parseLong(comment[13]),comment[14],result);
         }
         else

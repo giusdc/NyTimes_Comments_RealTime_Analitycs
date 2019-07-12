@@ -40,11 +40,10 @@ public class Query3Parser {
     public static Tuple7<Long, String,String,Long,Long,Integer,Long> parseMetrics(Tuple16<Long, String, Long, Long, String, Long, Integer, String, Long, String, Long, String, String, Long, String, Long> x, String redisAddress, String kafkaddress) throws IOException {
         Jedis jedis=new Jedis(redisAddress);
         //Delete a tuple after two weeks
-        jedis.setex(String.valueOf(x.f3),2679/*31 giorni*/,String.valueOf(x.f13)+"_"+x.f8);
+        jedis.setex(String.valueOf(x.f3),2679/*31 giorni*/,(x.f13)+"_"+x.f8);
         jedis.close();
         Instant now = Instant.now(new NanoClock(ZoneId.systemDefault()));
         long result = Duration.between(Instant.ofEpochMilli(0), now).toNanos();
-        //System.err.println(result);
         LatencyTracker.computeLatency(x.f15,result,3,kafkaddress);
         return new Tuple7<>(x.f13,x.f4,x.f7,x.f10,x.f8,x.f6,x.f15);
     }

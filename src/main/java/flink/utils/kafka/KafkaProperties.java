@@ -24,10 +24,6 @@ public class KafkaProperties {
                 "kafka-stream-client");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
                 "localhost"+":9092");
-       /* props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
-                Serdes.String().getClass().getName());
-        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
-                Serdes.Long().getClass().getName());*/
         props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, MyEventTimeExtractor.class);
         props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");

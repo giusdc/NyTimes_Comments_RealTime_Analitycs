@@ -7,6 +7,7 @@ import org.apache.flink.api.java.tuple.Tuple16;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
@@ -39,7 +40,6 @@ public class Query2 {
                 .setParallelism(3);
 
         //Monthly statistics
-
         DataStream<Tuple3<String, Integer, Long>> countMonthly = countHours
                 .keyBy(0)
                 .window(new MonthlyWindowTum())

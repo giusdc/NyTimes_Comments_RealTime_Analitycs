@@ -15,15 +15,11 @@ public class LatencyTracker {
     public static void computeLatency(long start, long end, int index,String kafkaAddress) throws IOException {
         Producer<String, String> producer = ProducerKafka.setConfig(kafkaAddress);
         double latency = (end - start)/Math.pow(10,6);
-        System.out.println(latency);
-
-
         switch (index){
             case 1:
                 ProducerKafka.produce(producer,latency+"\n","query1latency");
                 producer.close();
                 break;
-
 
             case 2:
                 ProducerKafka.produce(producer,latency+"\n","query2latency");

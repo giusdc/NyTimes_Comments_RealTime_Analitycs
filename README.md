@@ -14,8 +14,8 @@ dall’1 gennaio 2018 al 18 aprile 2018.
 * E' possibile inoltre eseguire lapplicativo non in modalità nodo standalone con Apache Flink, ma utilizzando il servizio Cloud per Hadoop Amazon EMR.
 In questo caso è necessario innanzitutto avere un account Amazon aws con relative ID chiave di accesso e chiave di accesso segreta, che dovranno essere sostittuire all'interno degli script python scriptAWS e launchAWSCluster. Creare una coppia di chiavi tramite la console Amazon EC2, da specificare anch'essa nello script scriptAWS.
 Una volta eseguite queste operazioni basterà: 
- * Lanciare prima lo script 'scriptAWS' (eseguendo il comando:``` python scriptAWS```)  
-  *Modificare nello script 'launchAWSCluster' il campo *'Ec2SubnetId': 'subnted ID XXX* inserendo l'apposita subnetId di kafka creata con lo script precedente (eseguendo il comando: ```pyhton launchAWSCluster```).
+   * Lanciare prima lo script 'scriptAWS' (eseguendo il comando:``` python scriptAWS```)  
+  * Modificare nello script 'launchAWSCluster' il campo *'Ec2SubnetId': 'subnted ID XXX* inserendo l'apposita subnetId di kafka creata con lo script precedente (eseguendo il comando: ```pyhton launchAWSCluster```).
   * Accedere alla console di aws e andando su Servizi->ec2->running instances, individuare l'istanza di kafka presente in 'eu-central-1c' e inviare, tramite il comando: ```scp -i keypath datasetPath/jarsPath ubuntu@indirizzoIPkafka:```, il dataset  e il jar simulator.jar
    * Connettersi all'istanza di kafka tramite il comando: ```ssh -i keyPath address```.
    * Creare la cartella data e inserire all'interno il file contenente il dataset
@@ -36,7 +36,7 @@ Anche in questo avere un account Amazon aws con relative ID chiave di accesso e 
 
     * Lanciare lo script 'scriptAWS' tramite il comando ```python scriptAWS```
     * Accedere alla console di aws su Servizi->ec2->running instances e sceglire una istanza di kafka
-    * Trasferire dataset, simulator.jar, safkaStreams.jar tramite il comando: ```scp -i keypath datasetPath/jarPath ubuntu@indirizzoIPkafka:```
+    * Trasferire dataset, simulator.jar, kafkaStreams.jar tramite il comando: ```scp -i keypath datasetPath/jarPath ubuntu@indirizzoIPkafka:```
     * Connettersi all'istanza di kafka tramite il comando: ```ssh -i keypath ubuntu@indirizzoIPkafka:```
     * Creare la cartella data e inserire al suo interno il dataset
     * Lanciare il simulatore tramite il comando ```java -jar Simulator.jar localhost```

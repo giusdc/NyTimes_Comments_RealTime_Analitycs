@@ -7,7 +7,7 @@ pubblicati sul New York Times, utilizzando il framework Apache Flink e per la qu
 Il dataset contiene dati relativi ai commenti (diretti e indiretti) di articoli pubblicati sul New York Times
 dall’1 gennaio 2018 al 18 aprile 2018.
 
-* Per eseguire l'applicativo in locale è necessario avere kafka,redis e flink installati all'interno della propria macchina. Una volta attivati kafka,redis e zookeper è sufficiente far partire prima il jar Flink.jar con argomenti indirizzo Kafka indirizzo Redis che in questo caso possono essere semplicemente 'localhost' e 'loclahost' (```ex: java -jar Flink localhost localhost```)
+* Per eseguire l'applicativo in locale è necessario avere kafka,zookeeper redis e flink installati all'interno della propria macchina. Una volta attivati kafka,redis e zookeper è sufficiente far partire prima il jar Flink.jar con argomenti indirizzo Kafka indirizzo Redis che in questo caso possono essere semplicemente 'localhost' e 'loclahost' (```ex: java -jar Flink localhost localhost```)
 Successivamente eseguire jar Simulator.jar con argomento l'indirizzo di kafka, anche in questo caso è sufficiente passare l'indirizzo locale 'localhost' (ex: ```java -jar Simulator localhost```)
 
 * E' possibile inoltre eseguire lapplicativo non in modalità nodo standalone con Apache Flink, ma utilizzando il servizio Cloud per Hadoop Amazon EMR.
@@ -16,7 +16,7 @@ Una volta eseguite queste opreazioni basterà lanciare prima lo script 'scriptAW
 A questo punto bisognerà accedere alla console di aws e andando su Servizi->ec2->running instances individuare l'istanza di kafka presente in 'eu-central-1c' e inviare, tramite il comando: scp -i 'nomeChiaveAWS.pem' 'inidirizzo della macchina: (ex: ```scp -i sabd2.pem /home/user/IdeaProjects/Sabd2Project/Data ubuntu@indirizzoIP:```), il dataset e il jar Simulator.jar analogamente ed infine connettersi all'istanza di kafka tramite il comando: ```ssh -i "key.pem" address```.
 
     Per collegarsi al cluster in cui è presente flink è necessario eseguire le seguenti operazioni:
-*  Connettersi eseguendo sulla console il comando: ssh -i keypath -C -D 8157 hadoop@masterpublicdns 
+*  Connettersi eseguendo sulla console il comando: ```ssh -i keypath -C -D 8157 hadoop@masterpublicdns``` 
 *  Avviare la sesione tramite il comando: ```flink-yarn-session -n 2 -d```
 *  Collegarsi alla dashboard esposta da flink all'indirizzo: http://hadoop@masterpublicdns:8088 
 *  Fare il submit del job inserendo il jar Flink.jar e passando come argomenti l'indirizzo ipv4 pubblico dell'istanza di kafka in cui è stato precedentemente inserito il Simulator.jar e il dataset e l'indirizzo ipv4 pubblico dell'istanza contenente Redis (che è possibile vedere sempre sulla console di amazon aws, andando su Servizi->ec2->running instances)

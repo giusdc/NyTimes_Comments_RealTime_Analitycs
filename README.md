@@ -7,7 +7,7 @@ pubblicati sul *New York Times*, utilizzando il framework Apache Flink e per la 
 Il dataset contiene dati relativi ai commenti (diretti e indiretti) di articoli pubblicati sul New York Times
 dall’1 gennaio 2018 al 18 aprile 2018.
 
-* Per eseguire l'applicativo in locale è necessario avere kafka,zookeeper redis e flink installati all'interno della propria macchina. Una volta attivati kafka,redis e zookeper è sufficiente far partire prima il jar Flink.jar con argomenti indirizzo Kafka indirizzo Redis che in questo caso possono essere semplicemente 'localhost' e 'loclahost' (```ex: java -jar Flink localhost localhost```)
+* Per eseguire l'applicativo in locale è necessario avere kafka,zookeeper redis e flink installati all'interno della propria macchina. Una volta attivati kafka,redis e zookeper è sufficiente far partire prima il jar Flink.jar con argomenti indirizzo Kafka indirizzo Redis che in questo caso possono essere semplicemente 'localhost' e 'loclahost' (```: java -jar Flink localhost localhost```)
 <br>Successivamente eseguire jar Simulator.jar con argomento l'indirizzo di kafka, anche in questo caso è sufficiente passare l'indirizzo locale 'localhost' (ex: ```java -jar Simulator localhost```)
 
 * E' possibile inoltre eseguire lapplicativo non in modalità nodo standalone con Apache Flink, ma utilizzando il servizio Cloud per Hadoop Amazon EMR.
@@ -26,7 +26,7 @@ Infine basterà eseguire il comando ```java -jar Simulator.jar localhost``` sull
 * Per eseguire la query 2 dell'applicativo tramite la libreria client Apache Kafka Streams è necessario:<br>
 Anche in questo avere un account Amazon aws con relative ID chiave di accesso e chiave di accesso segreta che dovranno essere sostittuire all'interno dello script python scriptAWS e poi eseguire le seguenti operazioni:
 
-    * Lanciare lo script 'scriptAWS' ```python scriptAWS```
+    * Lanciare lo script 'scriptAWS' tramite il comando ```python scriptAWS```
     * Accedere alla console di aws su Servizi->ec2->running instances e sceglire una istanza di kafka
     * Trasferire dataset, Simulator.jar, KafkaStreams.jar tramite il comando: ```scp -i keypath datasetPath/jarPath ubuntu@indirizzoIPkafka:```
     * Connettersi all'istanza di kafka tramite il comando: ```ssh -i keypath ubuntu@indirizzoIPkafka:```

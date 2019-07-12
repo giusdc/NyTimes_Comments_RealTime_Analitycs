@@ -15,13 +15,14 @@ import org.apache.kafka.streams.kstream.*;
 
 import java.time.Duration;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 
 import static org.apache.kafka.streams.kstream.Suppressed.BufferConfig.unbounded;
 
 public class KafkaStreamMain {
     public static void main(String[] args) {
 
-        final Properties props = KafkaProperties.createStreamProperties();
+        final Properties props = KafkaProperties.createStreamProperties(args[0]);
         final StreamsBuilder builder = new StreamsBuilder();
         KStream<Windowed<String>, Long> windowcommentsDaily = builder
                 .stream("comments", Consumed.with(Serdes.String(),
@@ -90,10 +91,32 @@ public class KafkaStreamMain {
 
         //Start Kafka Streams
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        //streams.cleanUp();
+
+        final CountDownLatch latch = new CountDownLatch(1);
         streams.cleanUp();
-        streams.start();
+
+        try {
+            streams.start();
+            latch.await();
+        } catch (Throwable e) {
+            System.exit(1);
+        }
+
+        // attach shutdown handler to catch control-c
+        Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook") {
+            @Override
+            public void run() {
+                streams.close();
+                latch.countDown();
+            }
+        });
+
+
+
+        //streams.start();
         // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+       // Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
 
     }
 

@@ -16,14 +16,14 @@ public class KafkaProperties {
         return props;
     }
 
-    public static Properties createStreamProperties() {
+    public static Properties createStreamProperties(String address) {
         final Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG,
                 "kafka-stream");
         props.put(StreamsConfig.CLIENT_ID_CONFIG,
                 "kafka-stream-client");
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "localhost"+":9092");
+                address+":9092");
         props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, MyEventTimeExtractor.class);
         props.put(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");

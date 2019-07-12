@@ -39,7 +39,7 @@ public class Simulator {
                 long nextApproveDate = Long.parseLong(next.split(",", -1)[5]);
                 long time = (nextApproveDate - firstApproveDate);
                 //Difference time between first time and the next
-                TimeUnit.MILLISECONDS.sleep(Math.round(time/100));
+                TimeUnit.MILLISECONDS.sleep(time);
                 System.out.println("ArticleID " + next.split(",", -1)[1]);
                 long timestamp = Long.parseLong(next.split(",", -1)[5]) * 1000;
                 LocalDateTime triggerTime2 =

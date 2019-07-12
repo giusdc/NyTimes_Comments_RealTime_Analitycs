@@ -8,7 +8,7 @@ Il dataset contiene dati relativi ai commenti (diretti e indiretti) di articoli 
 dall’1 gennaio 2018 al 18 aprile 2018.
 
 * Per eseguire l'applicativo in locale è necessario avere kafka,zookeeper redis e flink installati all'interno della propria macchina. Una volta attivati kafka,redis e zookeper è sufficiente:
-    * Far partire prima il jar Flink.jar con argomenti indirizzo Kafka indirizzo Redis, che in questo caso possono essere semplicemente localhost e loclahost ex: ``` java -jar allquery.jar localhost localhost```
+    * Far partire prima il jar allquery.jar con argomenti indirizzo Kafka indirizzo Redis, che in questo caso possono essere semplicemente localhost e loclahost ex: ``` java -jar allquery.jar localhost localhost```
     * Eseguire il jar Simulator.jar con argomento l'indirizzo di kafka, anche in questo caso è sufficiente passare l'indirizzo locale localhost ex: ```java -jar simulator localhost```
     
 * E' possibile inoltre eseguire lapplicativo non in modalità nodo standalone con Apache Flink, ma utilizzando il servizio Cloud per Hadoop Amazon EMR.

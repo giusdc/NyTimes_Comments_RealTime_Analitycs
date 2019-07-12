@@ -16,10 +16,10 @@ Una volta eseguite queste opreazioni basterà lanciare prima lo script 'scriptAW
 A questo punto bisognerà accedere alla console di aws e andando su Servizi->ec2->running instances individuare l'istanza di kafka presente in 'eu-central-1c' e inviare, tramite il comando: scp -i 'nomeChiaveAWS.pem' 'inidirizzo della macchina': (ex: scp -i sabd2.pem /home/user/IdeaProjects/Sabd2Project/Data ubuntu@indirizzoIP:), il dataset e il jar Simulator.jar analogamente ed infine connettersi all'istanza di kafka tramite il comando: ssh -i "key.pem" address.
 
 Per collegarsi al cluster in cui è presente flink è necessario eseguire le seguenti operazioni:
-	1. Connettersi eseguendo sulla console il comando: ssh -i keypath -C -D 8157 hadoop@masterpublicdns 
-	2. Avviare la sesione tramite il comando: flink-yarn-session -n 2 -d
-	3. Collegarsi alla dashboard esposta da flink all'indirizzo: http://hadoop@masterpublicdns:8088 
-	4. Fare il submit del job inserendo il jar Flink.jar e passando come argomenti l'indirizzo ipv4 pubblico dell'istanza di kafka in cui è stato precedentemente inserito il Simulator.jar e il dataset e l'indirizzo ipv4 pubblico dell'istanza contenente Redis (che è possibile vedere sempre sulla console di amazon aws, andando su Servizi->ec2->running instances)
+	*1. Connettersi eseguendo sulla console il comando: ssh -i keypath -C -D 8157 hadoop@masterpublicdns 
+	*2. Avviare la sesione tramite il comando: flink-yarn-session -n 2 -d
+	*3. Collegarsi alla dashboard esposta da flink all'indirizzo: http://hadoop@masterpublicdns:8088 
+	*4. Fare il submit del job inserendo il jar Flink.jar e passando come argomenti l'indirizzo ipv4 pubblico dell'istanza di kafka in cui è stato precedentemente inserito il Simulator.jar e il dataset e l'indirizzo ipv4 pubblico dell'istanza contenente Redis (che è possibile vedere sempre sulla console di amazon aws, andando su Servizi->ec2->running instances)
 
 Infine basterà eseguire il comando [java - jar Simulator.jar localhost] sull'istanza di kafka che inizierà la simulazione dello stream di tuple.
 
